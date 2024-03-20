@@ -2,14 +2,14 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 
+def home(request):
+    pass
+    return render(request, 'app01/home.html')
+
+
 def index(request):
     pass
     return render(request, 'app01/index.html')
-
-
-def login(request):
-    pass
-    return render(request, 'app01/login.html')
 
 
 def my_article(request):
