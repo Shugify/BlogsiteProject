@@ -5412,6 +5412,14 @@ button.bg-lightblue:hover,
 button.bg-lightblue:focus {
   background-color: #c6e2d0 !important; }
 
+.bg-blue {
+  background-color: #E2EEFF !important; }
+
+a.bg-blue:hover, a.bg-blue:focus,
+button.bg-blue:hover,
+button.bg-blue:focus {
+  background-color: #E2EEFF !important; }
+
 .bg-white {
   background-color: #fff !important; }
 
