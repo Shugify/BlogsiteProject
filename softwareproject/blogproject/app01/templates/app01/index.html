@@ -14,19 +14,33 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 <!-- Main CSS -->
 <link href="{% static 'app01/css/main.css' %}" rel="stylesheet"/>
+
+
+
+
+
 </head>
 <body>
+
 <!--------------------------------------
 NAVBARMundana is an HTML Bootstrap Template for Professional Blogging
 --------------------------------------->
 <nav class="topnav navbar navbar-expand-lg navbar-light bg-white fixed-top">
 <div class="container">
 	<a class="navbar-brand font-weight-bold spanborder" ><span><strong>一串欢迎语？啥都不放的话有点空</strong></span></a>
+
+       <ul class="navbar-nav ml-auto d-flex align-items-center">
+			<li class="nav-item highlight">
+			<a class="nav-link" href="http://127.0.0.1:8000/ad_login/">管理员登录</a>
+			</li>
+		</ul>
 </div>
+
 </nav>
+
 <!-- End Navbar -->
     
-    
+  <div id="errorPopup" class="error-popup" style="display: none;"></div>
 <!--------------------------------------
 HEADER
 --------------------------------------->
@@ -38,25 +52,52 @@ HEADER
 
 				<h1 class="secondfont mb-3 font-weight-bold">欢迎进入BLOG</h1>
 
-				<div class="col-md-6 pt-5  align-self-center">
-					<label >用户id: </label>
-					<input type="text" >
-				</div>
+				 <form id="loginForm" action="{% url 'index' %}" method="post">
+                    {% csrf_token %}
+                            <div class="col-md-12 pt-5  align-self-center">
+                                <label for="inputUserid">用户id:</label>
+                                <div class="row">
+                                    <div class="col-md-8 align-self-center>">
+                                        <input type="text" id="inputUserid" name="uid" class="form-control" placeholder="Userid" required></div>
+                                    <div class="col-md-3 align-self-center>"><span class="error-message" id="useridError"></span></div>
+                                </div>
 
-				<div class="col-md-6 pt-1  align-self-center">
-					<label >密码：</label>
-					<input type="text" >
-				</div>
+                            </div>
 
-                <div class="col-md-6 pt-5 pb-2 align-self-center">
-					<a href="http://127.0.0.1:8000/home/" class="btn btn-dark">确定</a>
+                            <div class="col-md-12 pt-2 align-self-center">
+                                <label for="inputPassword">密码：</label>
+                                <div class="row">
+                                    <div class="col-md-8 align-self-center>">
+                                        <input type="password" id="inputPassword" name="pwd" class="form-control" placeholder="Password" required></div>
+                                    <div class="col-md-3 align-self-center>"><span class="error-message" id="passwordError"></span></div>
+                                </div>
+                            </div>
 
-                	<a href="http://127.0.0.1:8000/index/" class="custom-link" style="text-decoration: underline; margin-left: 20px; display: inline-block;">点击创建账户</a>
-				</div>
+
+
+                            <span class="error-message" id="eError"></span>
+                            <div class="col-md-12 pt-5 pb-2 align-self-center">
+
+                                <button class="btn btn-dark" type="button" onclick="submitForm()">确定</button>
+
+
+                                <a href="http://127.0.0.1:8000/email_login/" class="custom-link" style="text-decoration: underline; margin-left: 50px; display: inline-block;">邮箱登录</a>
+
+
+                                <a href="http://127.0.0.1:8000/register/" class="custom-link" style="text-decoration: underline; margin-left: 30px; display: inline-block;">注册账户</a>
+
+
+
+                            </div>
+				</form>
+
             </div>
-            <div class="col-md-6 d-none d-md-block " style="background-size: 100%,100%; background-image: url(./assets/img/demo/home.jpg);">
+
+            <div class="col-md-6 d-none d-md-block " style="background-size: 100%,100%; background-image: url({% static 'app01/image/demo/home.jpg' %}) ;">
                 <!-- 保留原有的背景图片设置 -->
             </div>
+
+
         </div>
     </div>
 	</div>
@@ -96,5 +137,91 @@ JAVASCRIPTS
 <script src="{% static 'app01/js/vendor/popper.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'app01/js/vendor/bootstrap.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'app01/js/functions.js' %}" type="text/javascript"></script>
+
+<script>
+
+
+     function submitForm() {
+    var userid = document.getElementById('inputUserid').value;
+    var password = document.getElementById('inputPassword').value;
+    var csrfToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/index/', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('X-CSRFToken', csrfToken);
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                // 登录成功，跳转到其他页面
+                window.location.href = '/home/';
+            } else {
+                // 登录失败，设置错误信息
+                if (response.error_type === 'state') {
+
+                   alert( response.error);
+                }
+
+                 if (response.error_type === 'eempty') {
+
+                    document.getElementById('eError').style.color = "red";
+                    document.getElementById('eError').innerText = response.error;
+                }else {
+                    eError.textContent = ""; // 清空错误信息
+                }
+
+                if (response.error_type === 'Nouid') {
+                    document.getElementById('useridError').style.color = "red";
+                    document.getElementById('useridError').innerText = response.error;
+                }else {
+                    useridError.textContent = ""; // 清空错误信息
+                }
+
+                if (response.error_type === 'wrongpwd') {
+                    document.getElementById('passwordError').style.color = "red";
+                    document.getElementById('passwordError').innerText = response.error;
+                }else {
+                    passwordError.textContent = ""; // 清空错误信息
+                }
+
+
+
+
+            }
+        }
+    };
+
+    var data = 'uid=' + encodeURIComponent(userid) + '&pwd=' + encodeURIComponent(password);
+    xhr.send(data);
+}
+
+// 获取URL参数
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+}
+
+// 在页面加载完成后执行
+document.addEventListener('DOMContentLoaded', function() {
+    // 获取输入框元素
+    var userIdInput = document.getElementById("inputUserid");
+
+    // 获取从注册页面传递的用户ID参数
+    var userIdParam = getUrlParameter('userid');
+
+    // 如果用户ID参数存在，则将其设置为输入框的值
+    if (userIdParam !== '') {
+        userIdInput.value = userIdParam;
+    }
+});
+
+
+
+</script>
+
 </body>
 </html>
