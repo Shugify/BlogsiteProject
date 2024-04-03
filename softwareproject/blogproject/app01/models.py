@@ -10,6 +10,8 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 
 class User(models.Model):  # 用户信息表
+    DoesNotExist = None
+    objects = models.Manager()
     # 用户id，主键
     user_id = models.CharField(max_length=255, primary_key=True, db_index=True)
     # 用户名，默认佚名
@@ -17,7 +19,7 @@ class User(models.Model):  # 用户信息表
     # 用户个性签名
     user_introduction = models.CharField(max_length=255, null=True)
     # 用户头像profile photo
-    user_pfp = models.ImageField()
+    user_pfp = models.ImageField(default='app01/static/app01/image/default.jpg')
     # 用户注册日期
     user_register = models.DateField(null=True)
     # 用户性别，布尔型，0表示女性，1表示男性
