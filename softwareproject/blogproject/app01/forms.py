@@ -1,7 +1,20 @@
 # 引入表单类
 from django import forms
+# 引入文章模型
+from .models import Article
+# 引入表单类
+from django import forms
 # 引入 User 模型
 from django.contrib.auth.models import User
+
+
+# 写文章的表单类
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        # 指明数据模型来源
+        model = Article
+        # 定义表单包含的字段
+        fields = ('article_title', 'article_content', 'article_image', 'tags')
 
 
 class UserLoginForm(forms.Form):
@@ -26,6 +39,7 @@ class UserRegistrationForm(forms.Form):
             raise forms.ValidationError("密码不匹配，请重新输入。")
 
         return cleaned_data
+
 
 class UserEmailLoginForm(forms.Form):
     email = forms.CharField(label='Email')

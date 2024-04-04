@@ -1,39 +1,75 @@
-from django.contrib.auth import login, authenticate
-from django.http import HttpResponse
-from django.shortcuts import render
-from . import models, forms
-from django.http import JsonResponse
+# 引入redirect重定向模块
+import random
 from datetime import datetime  # 导入 datetime 模块
+
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+# 引入HttpResponse
+from django.http import HttpResponse
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+
+from . import models, forms
+# 引入刚才定义的ArticleForm表单类
+from .forms import ArticleForm
+from .funcs import upload_file
+from .models import Article
+# 引入User模型
+from .models import User
+from django.contrib import messages
 
 
 def home(request):
-    pass
-    return render(request, 'app01/home.html')
+    # 获取按照浏览量排序的文章列表
+    top_articles_views = Article.objects.all().order_by('-article_views')[:5]
+
+    # 获取按照时间排序的文章列表
+    top_articles_time = Article.objects.all().order_by('-article_created')[:5]
+
+    # 获取随机排序的文章列表
+    all_articles = list(Article.objects.all())
+    random.shuffle(all_articles)
+    top_articles_random = all_articles[:6]
+
+    context = {
+        'top_articles_views': top_articles_views,
+        'top_articles_time': top_articles_time,
+        'top_articles_random': top_articles_random
+    }
+    return render(request, 'app01/home.html', context)
 
 
-def index(request):
-    pass
-    return render(request, 'app01/index.html')
-
-
-def my_article(request):
-    pass
-    return render(request, 'app01/my_article.html')
-
-
-def article(request):
-    pass
-    return render(request, 'app01/article.html')
-
-
-def account_setting(request):
-    pass
-    return render(request, 'app01/account_setting.html')
-
-
-def category(request):
-    pass
-    return render(request, 'app01/category.html')
+def send_article(request):
+    # 判断用户是否提交数据
+    if request.method == "POST":
+        # 将提交的数据赋值到表单实例中
+        article_post_form = ArticleForm(data=request.POST, files=request.FILES)
+        # 判断提交的数据是否满足模型的要求
+        if article_post_form.is_valid():
+            # 保存数据，但暂时不提交到数据库中
+            new_article = article_post_form.save(commit=False)
+            if 'article_image' in request.FILES:
+                # 调用 upload_file 函数处理文件上传
+                upload_file(request)
+            # 指定数据库当前用户为作者
+            new_article.article_author = User.objects.get(user_id=request.user.user_id)
+            # 将新文章保存到数据库中
+            new_article.save()
+            # 新增代码，保存 tags 的多对多关系
+            article_post_form.save_m2m()
+            # 完成后返回到主页面
+            return redirect("home")
+        # 如果数据不合法，返回错误信息
+        else:
+            return HttpResponse("表单内容有误，请重新填写。")
+    # 如果用户请求获取数据
+    else:
+        # 创建表单类实例
+        article_post_form = ArticleForm()
+        # 赋值上下文
+        context = {'article_post_form': article_post_form}
+        # 返回模板
+        return render(request, 'app01/send_article.html', context)
 
 
 # 用户登录
@@ -54,6 +90,8 @@ def user_login(request):
 
             if user.user_password == password:
                 # 记录登录态
+                # 将用户数据保存在 session 中，即实现了登录动作
+                login(request, user)
                 request.session['is_login'] = True
                 request.session['user_id'] = user.user_id
                 request.session['user_mail'] = user.user_mail
@@ -124,7 +162,8 @@ def register(request):
     else:
         return render(request, 'app01/register.html')
 
-#邮箱登录
+
+# 邮箱登录
 def email_login(request):
     if request.method == 'POST':
         user_login_form = forms.UserEmailLoginForm(request.POST)
@@ -156,15 +195,38 @@ def email_login(request):
         return render(request, 'app01/email_login.html')
 
 
-
-#个人信息页
+# 个人信息页
 def self_center(request):
     pass
     return render(request, 'app01/self_center.html')
 
 
-
-#管理员登录
+# 管理员登录
 def ad_login(request):
     pass
     return render(request, 'app01/ad_login.html')
+
+
+def index(request):
+    pass
+    return render(request, 'app01/index.html')
+
+
+def my_article(request):
+    pass
+    return render(request, 'app01/my_article.html')
+
+
+def article(request):
+    pass
+    return render(request, 'app01/article.html')
+
+
+def account_setting(request):
+    pass
+    return render(request, 'app01/account_setting.html')
+
+
+def category(request):
+    pass
+    return render(request, 'app01/category.html')

@@ -2,14 +2,28 @@ from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 from mptt.models import MPTTModel, TreeForeignKey
-
 # Create your models here.
 # 自定义表名
 # class Meta:
 #     db_table = 'Users'
+# Django-taggit
+from taggit.managers import TaggableManager
+from django.contrib.auth.models import AbstractBaseUser
+from django.db import models
 
 
-class User(models.Model):  # 用户信息表
+class Category(models.Model):  # 分类信息表
+    # 分类id,主键
+    category_id = models.CharField(max_length=255, primary_key=True, db_index=True)
+    # 分类名
+    category_name = models.CharField(max_length=255, null=True)
+    # 分类描述
+    category_description = models.TextField()
+    # 分类创建时间
+    category_created = models.DateTimeField(default=now)
+
+
+class User(AbstractBaseUser):  # 用户信息表
     DoesNotExist = None
     objects = models.Manager()
     # 用户id，主键
@@ -38,6 +52,14 @@ class User(models.Model):  # 用户信息表
     user_state = models.BooleanField(null=True)
     # 用户密码
     user_password = models.CharField(max_length=255)
+    # 将 user_id 设置为用户名字段
+    USERNAME_FIELD = 'user_id'
+    # REQUIRED_FIELDS 需要的字段列表，这里不需要，因为我们在 create_user 方法中设置了必需的字段
+    REQUIRED_FIELDS = []
+
+    @property
+    def is_anonymous(self):
+        return False
 
 
 class Administrator(models.Model):  # 管理员信息表
@@ -68,8 +90,12 @@ class Administrator(models.Model):  # 管理员信息表
 
 
 class Article(models.Model):  # 文章信息表
+    # 添加默认的管理器
+    objects = models.Manager()
+    # 文章标签
+    tags = TaggableManager(blank=True)
     # 文章id，主键
-    article_id = models.CharField(max_length=255, primary_key=True, db_index=True)
+    article_id = models.AutoField(primary_key=True)
     # 文章作者的id,为User的主键的外键。参数 on_delete 用于指定数据删除的方式。这里设置为空，如果外键那条数据被删除，本条数据就将该字段设置为空。
     article_author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='article')
     # 文章创建时间。参数 default=timezone.now 指定其在创建数据时将默认写入当前的时间
@@ -81,11 +107,12 @@ class Article(models.Model):  # 文章信息表
     # 文章正文。保存大量文本使用 TextField
     article_content = models.TextField()
     # 文章图片
-    article_image = models.ImageField()
+    article_image = models.ImageField(upload_to='app01/static/app01/image/myimage/', null=True, blank=True)
     # 文章浏览量，默认值=0
     article_views = models.PositiveIntegerField(default=0)
     # 文章评论总数，默认值=0
     article_commentcnt = models.PositiveIntegerField(default=0)
+
     # 文章点赞量，默认值=0
     # article_likes = models.PositiveIntegerField(default=0)
 
@@ -110,6 +137,7 @@ class Comment(models.Model):  # 评论信息表
     comment_content = models.TextField()
     # 评论时间
     comment_created = models.DateTimeField(auto_now_add=True)
+
     # 评论点赞量，默认值=0
     # comment_likes = models.PositiveIntegerField(default=0)
 
@@ -136,6 +164,7 @@ class Comment(models.Model):  # 评论信息表
     # 替换 Meta 为 MPTTMeta
     class Meta:
         ordering = ('comment_created',)
+
     # class MPTTMeta:
     #     order_insertion_by = ['created']
 
@@ -143,21 +172,11 @@ class Comment(models.Model):  # 评论信息表
         return self.comment_content[:20]
 
 
-class Category(models.Model):  # 分类信息表
-    # 分类id,主键
-    category_id = models.CharField(max_length=255, primary_key=True, db_index=True)
-    # 分类名
-    category_name = models.CharField(max_length=255, null=True)
-    # 分类描述
-    category_description = models.TextField()
-    # 分类创建时间
-    category_created = models.DateTimeField(default=now)
-
-
 class ArticleCategory(models.Model):  # 文章设置分类表
     # 关系：多对多
     article_id = models.CharField(max_length=255)
     category_id = models.CharField(max_length=255)
+
     # Django只能定义一个primary_key=True
     # 通过unique_together定义复合主键
 
