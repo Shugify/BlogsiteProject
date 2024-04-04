@@ -19,6 +19,11 @@
 <!--------------------------------------
 NAVBARMundana is an HTML Bootstrap Template for Professional Blogging
 --------------------------------------->
+<link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css"
+>
+
 <nav class="topnav navbar navbar-expand-lg navbar-light bg-white fixed-top">
 <div class="container">
 	<a class="navbar-brand" href="http://127.0.0.1:8000/home/"><strong>主页面</strong></a>
@@ -54,6 +59,14 @@ NAVBARMundana is an HTML Bootstrap Template for Professional Blogging
 
 		<ul class="navbar-nav ml-auto d-flex align-items-center">
 			<li class="nav-item highlight">
+				<a class="nav-link" href="http://127.0.0.1:8000/send_article/">发布博客</a>
+			</li>
+		</ul>
+
+
+
+		<ul class="navbar-nav ml-auto d-flex align-items-center">
+			<li class="nav-item highlight">
 			<a class="nav-link" href="http://127.0.0.1:8000/account_setting/">个人中心</a>
 			</li>
 		</ul>
@@ -61,193 +74,162 @@ NAVBARMundana is an HTML Bootstrap Template for Professional Blogging
 </div>
 </nav>
 <!-- End Navbar -->
-    
-    
-<!--------------------------------------
-HEADER
-<div class="container">
-	<div class="jumbotron jumbotron-fluid mb-3 pt-0 pb-0 bg-lightblue position-relative">
-		<div class="pl-4 pr-0 h-100 tofront">
-			<div class="row justify-content-between">
-				<div class="col-md-6 pt-6 pb-6 align-self-center">
-					<h1 class="secondfont mb-3 font-weight-bold">Mundana is an HTML Bootstrap Template for Professional Blogging</h1>
-					<p class="mb-3">
-						Beautifully crafted with the latest technologies, SASS & Bootstrap 4.1.3, Mundana is the perfect design for your professional blog. Homepage, post article and category layouts available.
-					</p>
-					<a href="http://127.0.0.1:8000/article/" class="btn btn-dark">Read More</a>
-				</div>
-				<div class="col-md-6 d-none d-md-block pr-0" style="background-size:cover;background-image:url(./assets/img/demo/home.jpg);">	</div>
-			</div>
-		</div>
-	</div>
-</div>
-End Header -->
-
-<!----------------
-发布文章
---------------->
 
 <!----------------
 MAIN
 ------------------>
     
 <div class="container pt-4 pb-4">
-	<div class="row">
-		<div class="col-lg-6">
-			<div class="card border-0 mb-4 box-shadow h-xl-300">              
-                <div style="background-image: url(./assets/img/demo/1.jpg); height: 150px;    background-size: cover;    background-repeat: no-repeat;"></div>               
-				<div class="card-body px-0 pb-0 d-flex flex-column align-items-start">
-					<h2 class="h4 font-weight-bold">
-					<a class="text-dark" href="http://127.0.0.1:8000/article/">Brain Stimulation Relieves Depression Symptoms</a>
-					</h2>
-					<p class="card-text">
-						 Researchers have found an effective target in the brain for electrical stimulation to improve mood in people suffering from depression.
-					</p>
-					<div>
-						<small class="d-block"><a class="text-muted" href="http://127.0.0.1:8000/author/">Favid Rick</a></small>
-						<small class="text-muted">Dec 12 &middot; 5 min read</small>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-6">
-			<div class="flex-md-row mb-4 box-shadow h-xl-300">
-				<div class="mb-3 d-flex align-items-center">
-					<img height="80" src="{% static 'app01/image/demo/blog4.jpg' %}">
-					<div class="pl-3">
-						<h2 class="mb-2 h6 font-weight-bold">
-						<a class="text-dark" href="http://127.0.0.1:8000/article/">Nasa's IceSat space laser makes height maps of Earth</a>
-						</h2>
-						<div class="card-text text-muted small">
-							 Jake Bittle in LOVE/HATE
-						</div>
-						<small class="text-muted">Dec 12 &middot; 5 min read</small>
-					</div>
-				</div>
-				<div class="mb-3 d-flex align-items-center">
-					<img height="80" src="{% static 'app01/image/demo/blog5.jpg' %}">
-					<div class="pl-3">
-						<h2 class="mb-2 h6 font-weight-bold">
-						<a class="text-dark" href="http://127.0.0.1:8000/article/">Underwater museum brings hope to Lake Titicaca</a>
-						</h2>
-						<div class="card-text text-muted small">
-							 Jake Bittle in LOVE/HATE
-						</div>
-						<small class="text-muted">Dec 12 &middot; 5 min read</small>
-					</div>
-				</div>
-				<div class="mb-3 d-flex align-items-center">
-					<img height="80" src="{% static 'app01/image/demo/blog6.jpg' %}">
-					<div class="pl-3">
-						<h2 class="mb-2 h6 font-weight-bold">
-						<a class="text-dark" href="http://127.0.0.1:8000/article/">Sun-skimming probe starts calling home</a>
-						</h2>
-						<div class="card-text text-muted small">
-							 Jake Bittle in LOVE/HATE
-						</div>
-						<small class="text-muted">Dec 12 &middot; 5 min read</small>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="row justify-content-between mb-2">
+        {% for article in top_articles_random %}
+        <div class="col-lg-6">
+            <div class="card border-0 mb-4 box-shadow h-xl-100">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        {% if article.article_image %}
+                            <img src="{{ article.article_image.url }}" class="card-img" alt="{{ article.article_title }}">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body pb-0">
+                            <h2 class="h4 font-weight-bold">
+                                <a href="http://127.0.0.1:8000/article/" class="text-dark">{{ article.article_title }}</a>
+                            </h2>
+							<!-- 标签 -->
+							<span>
+								{% for tag in article.tags.all %}
+									<a href="#" class="badge badge-secondary">
+										{{ tag }}
+									</a>
+								{% endfor %}
+							</span>
+                            <!-- 显示文章作者 -->
+                            <div class="card-text text-muted small">
+                                <p class="text-muted">作者: {{ article.article_author.user_name }}</p>
+                            </div>
+							<!-- 注脚 -->
+							<p>
+								<!-- 附加信息，增加了图标 -->
+								<span>
+									<i class="fas fa-eye" style="color: lightskyblue;"></i>
+									{{ article.article_views }}&nbsp;&nbsp;&nbsp;
+								</span>
+								<span>
+									<i class="fas fa-comments" style="color: yellowgreen;"></i>
+									<!-- 修改为评论的计数 -->
+									{{ article.article_commentcnt }}&nbsp;&nbsp;&nbsp;
+								</span>
+								<span>
+									<i class="fas fa-clock" style="color: pink;"></i>
+									{{ article.article_created|date:"Y-m-d H:i:s" }}
+								</span>
+							</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
+
     
 <div class="container">
 	<div class="row justify-content-between">
 		<div class="col-md-8">
-			<h5 class="font-weight-bold spanborder"><span>All Stories</span></h5>
-			<div class="mb-3 d-flex justify-content-between">
-				<div class="pr-3">
-					<h2 class="mb-1 h4 font-weight-bold">
-					<a class="text-dark" href="http://127.0.0.1:8000/article/">Nearly 200 Great Barrier Reef coral species also live in the deep sea</a>
-					</h2>
+			<h5 class="font-weight-bold spanborder"><span>最新发布</span></h5>
+			{% for article in top_articles_time %}
+            <div class="mb-3 d-flex justify-content-between">
+                <div class="pr-3">
+                    <h2 class="mb-1 h4 font-weight-bold">
+                        <a href="http://127.0.0.1:8000/article/" class="text-dark">{{ article.article_title }}</a>
+                    </h2>
+					<!-- 标签 -->
+					<span>
+						{% for tag in article.tags.all %}
+						<a href="#" class="badge badge-secondary">
+							{{ tag }}
+						</a>
+						{% endfor %}
+					</span>
+                    <!-- 显示文章作者 -->
+                    <div class="card-text text-muted small">
+                        <p class="text-muted">作者: {{ article.article_author.user_name }}</p>
+                    </div>
+                    <!-- 注脚 -->
 					<p>
-						There are more coral species lurking in the deep ocean that previously thought.
+						<!-- 附加信息，增加了图标 -->
+						<span>
+							<i class="fas fa-eye" style="color: lightskyblue;"></i>
+							{{ article.article_views }}&nbsp;&nbsp;&nbsp;
+						</span>
+						<span>
+							<i class="fas fa-comments" style="color: yellowgreen;"></i>
+							<!-- 修改为评论的计数 -->
+							{{ article.article_commentcnt }}&nbsp;&nbsp;&nbsp;
+						</span>
+						<span>
+							<i class="fas fa-clock" style="color: pink;"></i>
+							{{ article.article_created|date:"Y-m-d H:i:s" }}
+						</span>
 					</p>
-					<div class="card-text text-muted small">
-						 Jake Bittle in SCIENCE
-					</div>
-					<small class="text-muted">Dec 12 &middot; 5 min read</small>
-				</div>
-				<img height="120" src="{% static 'app01/image/demo/blog8.jpg' %}">
-			</div>
-			<div class="mb-3 d-flex justify-content-between">
-				<div class="pr-3">
-					<h2 class="mb-1 h4 font-weight-bold">
-					<a class="text-dark" href="http://127.0.0.1:8000/article/">East Antarctica's glaciers are stirring</a>
-					</h2>
-					<p>
-						Nasa says it has detected the first signs of significant melting in a swathe of glaciers in East Antarctica.
-					</p>
-					<div class="card-text text-muted small">
-						 Jake Bittle in SCIENCE
-					</div>
-					<small class="text-muted">Dec 12 &middot; 5 min read</small>
-				</div>
-				<img height="120" src="{% static 'app01/image/demo/1.jpg' %}">
-			</div>
-			<div class="mb-3 d-flex justify-content-between">
-				<div class="pr-3">
-					<h2 class="mb-1 h4 font-weight-bold">
-					<a class="text-dark" href="http://127.0.0.1:8000/article/">50 years ago, armadillos hinted that DNA wasn’t destiny</a>
-					</h2>
-					<p>
-						Nasa says it has detected the first signs of significant melting in a swathe of glaciers in East Antarctica.
-					</p>
-					<div class="card-text text-muted small">
-						 Jake Bittle in SCIENCE
-					</div>
-					<small class="text-muted">Dec 12 &middot; 5 min read</small>
-				</div>
-				<img height="120" src="{% static 'app01/image/demo/5.jpg' %}">
-			</div>
+                </div>
+                <!-- 显示文章图片 -->
+				{% if article.article_image %}
+					<img height="120" src="{{ article.article_image.url }}" alt="{{ article.article_title }}">
+				{% endif %}
+            </div>
+            {% endfor %}
 		</div>
+
 		<div class="col-md-4 pl-4">
-            <h5 class="font-weight-bold spanborder"><span>Popular</span></h5>
+			<h5 class="font-weight-bold spanborder"><span>热门推荐</span></h5>
 			<ol class="list-featured">
-				<li>
-				<span>
-				<h6 class="font-weight-bold">
-				<a href="http://127.0.0.1:8000/article/" class="text-dark">Did Supernovae Kill Off Large Ocean Animals?</a>
-				</h6>
-				<p class="text-muted">
-					Jake Bittle in SCIENCE
-				</p>
-				</span>
+				{% for article in top_articles_views %}
+				<li class="d-flex align-items-start"> <!-- 使用 Flexbox 布局 -->
+					<div class="article-info flex-grow-1"> <!-- 文章信息容器 -->
+						<h6 class="font-weight-bold">
+							<a href="http://127.0.0.1:8000/article/" class="text-dark">{{ article.article_title }}</a>
+						</h6>
+						<!-- 标签 -->
+						<span>
+							{% for tag in article.tags.all %}
+							<a href="#" class="badge badge-secondary">
+								{{ tag }}
+							</a>
+							{% endfor %}
+						</span>
+						<!-- 显示文章作者 -->
+						<p class="text-muted">作者: {{ article.article_author.user_name }}</p>
+						 <!-- 注脚 -->
+					<p>
+						<!-- 附加信息，增加了图标 -->
+						<span>
+							<i class="fas fa-eye" style="color: lightskyblue;"></i>
+							{{ article.article_views }}&nbsp;&nbsp;&nbsp;
+						</span>
+						<span>
+							<i class="fas fa-comments" style="color: yellowgreen;"></i>
+							<!-- 修改为评论的计数 -->
+							{{ article.article_commentcnt }}&nbsp;&nbsp;&nbsp;
+						</span>
+						<span>
+							<i class="fas fa-clock" style="color: pink;"></i>
+							{{ article.article_created|date:"Y-m-d H:i:s" }}
+						</span>
+					</p>
+					</div>
+					<div class="article-image"> <!-- 图片容器 -->
+						{% if article.article_image %}
+						<img height="80" src="{{ article.article_image.url }}" alt="{{ article.article_title }}">
+						{% endif %}
+					</div>
 				</li>
-				<li>
-				<span>
-				<h6 class="font-weight-bold">
-				<a href="http://127.0.0.1:8000/article/" class="text-dark">Humans Reversing Climate Clock: 50 Million Years</a>
-				</h6>
-				<p class="text-muted">
-					Jake Bittle in SCIENCE
-				</p>
-				</span>
-				</li>
-				<li>
-				<span>
-				<h6 class="font-weight-bold">
-				<a href="http://127.0.0.1:8000/article/" class="text-dark">Unprecedented Views of the Birth of Planets</a>
-				</h6>
-				<p class="text-muted">
-					Jake Bittle in SCIENCE
-				</p>
-				</span>
-				</li>
-				<li>
-				<span>
-				<h6 class="font-weight-bold">
-				<a href="http://127.0.0.1:8000/article/" class="text-dark">Effective New Target for Mood-Boosting Brain Stimulation Found</a>
-				</h6>
-				<p class="text-muted">
-					Jake Bittle in SCIENCE
-				</p>
-				</span>
-				</li>
+				{% endfor %}
 			</ol>
 		</div>
+
+
 	</div>
 </div>
     
