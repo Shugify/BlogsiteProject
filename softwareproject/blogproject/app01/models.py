@@ -132,7 +132,7 @@ class Article(models.Model):  # 文章信息表
 
 class Comment(models.Model):  # 评论信息表
     # 评论id，主键
-    comment_id = models.CharField(max_length=255, primary_key=True, db_index=True)
+    comment_id = models.AutoField(primary_key=True, db_index=True)
     # 评论所属的文章的id,为Article主键的外键。参数 on_delete 用于指定数据删除的方式。这里设置级联删除，如果外键那条数据被删除，本条数据也删除。
     comment_article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comment')
     # 发表评论的用户的id，为User主键的外键。参数 on_delete 用于指定数据删除的方式。这里设置为空，如果外键那条数据被删除，本条数据就将该字段设置为空。
@@ -142,7 +142,7 @@ class Comment(models.Model):  # 评论信息表
     # 评论内容
     comment_content = models.TextField()
     # 评论时间
-    comment_created = models.DateTimeField(auto_now_add=True)
+    comment_created = models.DateTimeField(default=now)
 
     # 评论点赞量，默认值=0
     # comment_likes = models.PositiveIntegerField(default=0)
@@ -175,7 +175,8 @@ class Comment(models.Model):  # 评论信息表
     #     order_insertion_by = ['created']
 
     def __str__(self):
-        return self.comment_content[:20]
+        # return self.comment_content[:20]
+        return str(self.comment_id)
 
 
 class ArticleCategory(models.Model):  # 文章设置分类表

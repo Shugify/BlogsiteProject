@@ -2,8 +2,7 @@
 from django import forms
 # 引入文章模型
 from .models import Article
-# 引入表单类
-from django import forms
+from .models import Comment
 # 引入 User 模型
 from django.contrib.auth.models import User
 
@@ -44,3 +43,9 @@ class UserRegistrationForm(forms.Form):
 class UserEmailLoginForm(forms.Form):
     email = forms.CharField(label='Email')
     pwd = forms.CharField(label='Password', max_length=100, widget=forms.PasswordInput, required=True)
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['comment_content']

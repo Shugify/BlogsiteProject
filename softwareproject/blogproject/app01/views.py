@@ -7,13 +7,14 @@ from django.contrib.auth.decorators import login_required
 # 引入HttpResponse
 from django.http import HttpResponse
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 
 from . import models, forms
 # 引入刚才定义的ArticleForm表单类
-from .forms import ArticleForm
+from .forms import ArticleForm, CommentForm
 from .funcs import upload_file
-from .models import Article
+from .models import Article, Comment
 # 引入User模型
 from .models import User
 from django.contrib import messages
@@ -292,6 +293,46 @@ def delete_article(request, id):
     return redirect("my_article")
 
 
+# 文章详情
+def article_detail(request, id):
+    # 取出相应的文章
+    # article = Article.objects.get(article_id=id)
+    article = get_object_or_404(Article, article_id=id)
+    # 取出文章评论
+    comments = Comment.objects.filter(comment_article=article)
+    # comment_url = reverse('post_comment', args=(article.article_id,))
+    # 需要传递给模板的对象
+    # context = {'article': article,
+    #            'author_name': article.article_author.user_name,
+    #            'comments': comments}
+    context = {'article': article,
+               'author_name': article.article_author.user_name,
+               'post_id': article.article_id,  # 确保 post_id 传递给模板
+               'comments': comments}
+    # 载入模板，并返回context对象
+    return render(request, 'app01/article.html', context)
+
+
+@login_required(login_url='/login/')
+def post_comment(request, article_id):
+    article = get_object_or_404(Article, article_id=article_id)
+    if request.method == 'POST':
+        # 用户提交的数据存在 request.POST 中，这是一个类字典对象。
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            # 设置评论所属的文章和用户
+            new_comment.comment_article = article
+            new_comment.comment_user = request.user
+            new_comment.save()  # comment_created 将在此时自动设置为当前时间
+            # 可以重定向或渲染相同页面
+            return redirect(reverse('article',  kwargs={'id': article_id}))
+        else:
+            return HttpResponse("表单内容有误，请重新填写。")
+    # 处理错误请求
+    else:
+        return HttpResponse("发表评论仅接受POST请求。")
+
 # 个人评论列举页
 def my_comment(request):
     # 获取特定用户
@@ -332,9 +373,9 @@ def delete_comment(request, id):
     return redirect("my_comment")
 
 
-def article(request, id):
-    pass
-    return render(request, 'app01/article.html')
+# def article(request):
+#     pass
+#     return render(request, 'app01/article.html')
 
 
 def account_setting(request):

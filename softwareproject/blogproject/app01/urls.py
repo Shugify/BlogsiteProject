@@ -35,12 +35,14 @@ urlpatterns = [
     # 评论删除页
     path('delete_comment/<str:id>/', views.delete_comment, name='delete_comment'),
     # 文章详情页
-    path('article/<str:id>/', views.article, name='article'),
+    # path('article/<str:id>/', views.article, name='article'),
+    path('article/<int:id>/', views.article_detail),  # 文章详情
     # 个人信息页
     path('account_setting/', views.account_setting, name='account_setting'),
     # 分类页
     path('category/', views.category, name='category'),
-
+    # 评论管理
+    path('post_comment/<int:article_id>/', views.post_comment, name='post_comment'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
