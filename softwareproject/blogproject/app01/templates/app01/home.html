@@ -6,7 +6,7 @@
 <link rel="apple-touch-icon" sizes="76x76" href="{% static 'app01/image/favicon.ico' %}"/>
 <link rel="icon" type="image/png" href="{% static 'app01/image/favicon.ico' %}">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-<title>Mundana Template by WowThemesNet</title>
+<title>BlogSphere博界</title>
 <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
 <!-- Google Font -->
 <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Source+Sans+Pro:400,600,700" rel="stylesheet">
@@ -133,7 +133,7 @@ MAIN
     </div>
 </div>
 
-    
+<!-- 最新发布 -->
 <div class="container">
 	<div class="row justify-content-between">
 		<div class="col-md-8">
@@ -142,7 +142,7 @@ MAIN
             <div class="mb-3 d-flex justify-content-between">
                 <div class="pr-3">
                     <h2 class="mb-1 h4 font-weight-bold">
-                        <a href="http://127.0.0.1:8000/article/" class="text-dark">{{ article.article_title }}</a>
+                        <a href="{% url 'article' article.article_id %}" class="text-dark">{{ article.article_title }}</a>
                     </h2>
 					<!-- 标签 -->
 					<span>
@@ -181,7 +181,7 @@ MAIN
             </div>
             {% endfor %}
 		</div>
-
+<!-- 热门推荐 -->
 		<div class="col-md-4 pl-4">
 			<h5 class="font-weight-bold spanborder"><span>热门推荐</span></h5>
 			<ol class="list-featured">
@@ -189,7 +189,7 @@ MAIN
 				<li class="d-flex align-items-start"> <!-- 使用 Flexbox 布局 -->
 					<div class="article-info flex-grow-1"> <!-- 文章信息容器 -->
 						<h6 class="font-weight-bold">
-							<a href="http://127.0.0.1:8000/article/" class="text-dark">{{ article.article_title }}</a>
+							<a href="{% url 'article' article.article_id %}" class="text-dark">{{ article.article_title }}</a>
 						</h6>
 						<!-- 标签 -->
 						<span>
