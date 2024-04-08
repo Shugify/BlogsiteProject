@@ -296,19 +296,22 @@ def delete_article(request, id):
 # 文章详情
 def article_detail(request, id):
     # 取出相应的文章
-    # article = Article.objects.get(article_id=id)
     article = get_object_or_404(Article, article_id=id)
     # 取出文章评论
     comments = Comment.objects.filter(comment_article=article)
-    # comment_url = reverse('post_comment', args=(article.article_id,))
-    # 需要传递给模板的对象
-    # context = {'article': article,
-    #            'author_name': article.article_author.user_name,
-    #            'comments': comments}
+    # 浏览量+1
+    article.article_views += 1
+    article.save(update_fields=['article_views'])
+    # 计算评论数量
+    article_commentcnt = comments.count()
+    article.article_commentcnt = article_commentcnt
+    article.save(update_fields=['article_commentcnt'])
+    # 字典，内容要传递给模版
     context = {'article': article,
                'author_name': article.article_author.user_name,
                'post_id': article.article_id,  # 确保 post_id 传递给模板
-               'comments': comments}
+               'comments': comments,
+               'article_commentcnt': article_commentcnt}
     # 载入模板，并返回context对象
     return render(request, 'app01/article.html', context)
 
