@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% load static %}
-<meta charset="utf-8"/>
-<link rel="apple-touch-icon" sizes="76x76" href="{% static 'app01/image/favicon.ico' %}">
-<link rel="icon" type="image/png" href="{% static 'app01/image/favicon.ico' %}">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-<title>BlogSphere博界</title>
-<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Source+Sans+Pro:400,700" rel="stylesheet">
-<!-- Font Awesome Icons -->
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-<!-- Main CSS -->
-<link href="{% static 'app01/css/main.css' %}" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    {% load static %}
+    <meta charset="utf-8"/>
+    <link href="{% static 'app01/image/favicon.ico' %}" rel="apple-touch-icon" sizes="76x76">
+    <link href="{% static 'app01/image/favicon.ico' %}" rel="icon" type="image/png">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+    <title>BlogSphere博界</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
+          name='viewport'/>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Source+Sans+Pro:400,700"
+          rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" rel="stylesheet">
+    <!-- Main CSS -->
+    <link href="{% static 'app01/css/main.css' %}" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-	<style>
-		.nav-link.active {
-     	background-color: #03a87c; /* 修改背景颜色为绿色 */
-    	color: white; /* 修改文本颜色为白色 */
-		}
+    <style>
+        .nav-link.active {
+         background-color: #03a87c; /* 修改背景颜色为绿色 */
+        color: white; /* 修改文本颜色为白色 */
+        }
 
 
-		/* 弹窗外层容器 */
+        /* 弹窗外层容器 */
 .modal {
     position: fixed;
     z-index: 9999;
@@ -81,7 +84,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 设置阴影效果 */
   }
 
-	</style>
+    </style>
 
 </head>
 <body>
@@ -89,57 +92,56 @@
 NAVBAR
 --------------------------------------->
 <nav class="topnav navbar navbar-expand-lg navbar-light bg-white fixed-top">
-<div class="container">
-	<a class="navbar-brand" href="http://127.0.0.1:8000/home/"><strong>主页面</strong></a>
-	<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-	<span class="navbar-toggler-icon"></span>
-	</button>
-	<div class="navbar-collapse collapse" id="navbarColor02" style="">
+    <div class="container">
+        <a class="navbar-brand" href="http://127.0.0.1:8000/home/"><strong>主页面</strong></a>
+        <button aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler collapsed"
+                data-target="#navbarColor02" data-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbarColor02" style="">
 
-		<ul class="navbar-nav mr-auto d-flex align-items-center">
+            <ul class="navbar-nav mr-auto d-flex align-items-center">
 
-			<li class="nav-item">
-			<a class="nav-link" href="http://127.0.0.1:8000/my_article/">我的blog</a>
-			</li>
-			<li class="nav-item">
-			<a class="nav-link" href="http://127.0.0.1:8000/category/">分类</a>
-			</li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://127.0.0.1:8000/my_article/">我的blog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://127.0.0.1:8000/category/">分类</a>
+                </li>
 
-		</ul>
-
-
-		<ul class="navbar-nav ml-auto d-flex align-items-center">
-			<li class="nav-item highlight">
-			 	 <form class="form-inline my-2 my-lg-0">
-        			<input class="form-control form-control-sm mr-sm-2 rounded" type="search" placeholder="关键字搜索文章" aria-label="Search" id="navSearchInput">
-
-        			<button class="btn btn-outline-success btn-sm my-2 my-sm-0" type="button" onclick="performSearch()">搜索</button>
-
-    			</form>
-			</li>
-		</ul>
+            </ul>
 
 
+            <ul class="navbar-nav ml-auto d-flex align-items-center">
+                <li class="nav-item highlight">
+                    <form class="form-inline my-2 my-lg-0">
+                        <input aria-label="Search" class="form-control form-control-sm mr-sm-2 rounded"
+                               id="navSearchInput" placeholder="关键字搜索文章" type="search">
 
-		<ul class="navbar-nav ml-auto d-flex align-items-center">
-			<li class="nav-item highlight">
-			<a class="nav-link" href="http://127.0.0.1:8000/account_setting/">个人中心</a>
-			</li>
-		</ul>
-	</div>
-</div>
+                        <button class="btn btn-outline-success btn-sm my-2 my-sm-0" onclick="performSearch()"
+                                type="button">搜索
+                        </button>
+
+                    </form>
+                </li>
+            </ul>
+
+
+            <ul class="navbar-nav ml-auto d-flex align-items-center">
+                <li class="nav-item highlight">
+                    <a class="nav-link" href="http://127.0.0.1:8000/account_setting/">个人中心</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </nav>
 <!-- End Navbar -->
-    
 
 
 <!--------------------------------------
 HEADER
 --------------------------------------->
-<div class="container pt-4 ">
 
-
-</div>
 <!-- End Header -->
 
 
@@ -148,157 +150,170 @@ MAIN
 --------------------------------------->
 
 
-<div class="container ">
-	<div class="row justify-content-between pt-3">
-		<div class="col-md-2 pt-3 ">
-			<div class="sticky-top text-center ">
+<div class="container mt-1 pt-2">
+    <div class="row justify-content-between pt-3">
+        <div class="col-md-2 pt-3 ">
+            <div class="sticky-top text-center ">
 
-				<a class="nav-link active" href="http://127.0.0.1:8000/account_setting/" >个人信息</a>
-        		<a class="nav-link" href="http://127.0.0.1:8000/my_article/" >我的博客</a>
-        		<a class="nav-link"  href="http://127.0.0.1:8000/account_setting1/" >账号设置</a>
+                <a class="nav-link active" href="http://127.0.0.1:8000/account_setting/">个人信息</a>
+                <a class="nav-link" href="http://127.0.0.1:8000/my_article/">我的博客</a>
+                <a class="nav-link" href="http://127.0.0.1:8000/account_setting1/">账号设置</a>
 
-			</div>
-		</div>
+            </div>
+        </div>
 
-		<div class="col-md-10 pl-5 bg-white">
-			<h2 class="pb-4 font-weight-bold spanborder">个人信息</h2>
+        <div class="col-md-10 pl-5 bg-white">
+            <h2 class="pb-4 font-weight-bold spanborder">个人信息</h2>
 
-			<div class="row">
-				<div class="user-avatar-container">
-				<img src="{{ user.user_pfp.url }}?timestamp={{ timestamp }}" id="userAvatar" alt="用户头像" class="rounded-circle" height="130" width="130">
-				</div>
+            <div class="row">
+                <div class="user-avatar-container">
+                    <img alt="用户头像" class="rounded-circle" height="130"
+                         id="userAvatar" src="{{ user.user_pfp.url }}?timestamp={{ timestamp }}" width="130">
+                </div>
 
-				<div class="col">
-					<div id="main_name" style="font-size: 27px; margin-left: 50px; margin-top: 25px; font-weight: bold;">{{ user.user_name }}</div>
-					<div style="color: #333333; font-size: 17px; margin-left: 50px; margin-top: 10px;">已入驻博界&nbsp;{{ days_diff}}&nbsp;天</div>
-				</div>
-			</div>
-			<!-- 用户头像 -->
+                <div class="col">
+                    <div id="main_name"
+                         style="font-size: 27px; margin-left: 50px; margin-top: 25px; font-weight: bold;">{{user.user_name }}
+                    </div>
+                    <div style="color: #333333; font-size: 17px; margin-left: 50px; margin-top: 10px;">已入驻博界&nbsp;{{days_diff}}&nbsp;天
+                    </div>
+                </div>
+            </div>
+            <!-- 用户头像 -->
 
 
-			<div class="col-md-8">
-				<div class="row pt-4">
+            <div class="col-md-8">
+                <div class="row pt-4">
 
-    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">用户昵称&nbsp;:</p>
-    <p class="pr-5 pt-3" id="user_name">{{ user.user_name }}</p>
-    <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2" onclick="editField('user_name')">修改</button>
+                    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">用户昵称&nbsp;:</p>
+                    <p class="pr-5 pt-3" id="user_name">{{ user.user_name }}</p>
+                    <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2"
+                            onclick="editField('user_name')">修改
+                    </button>
+                </div>
+
+                <div class="row pt-4">
+
+                    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">用&nbsp;&nbsp;&nbsp;&nbsp;户&nbsp;&nbsp;ID&nbsp;:</p>
+                    <p class="pr-5 pt-3" id="user_id">{{ user.user_id }}</p>
+                </div>
+
+                <div class="row pt-4">
+                    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">个人介绍&nbsp;:</p>
+
+                    <p class="pr-5 pt-3" id="user_introduction">{{ user.user_introduction }}</p>
+
+                    <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2"
+                            onclick="editField('user_introduction')">修改
+                    </button>
+                </div>
+
+                <div class="row pt-4">
+                    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别&nbsp;:</p>
+
+                    <p class="pr-5 pt-3" id="user_sex">
+                        {% if user.user_sex == 1 %}
+                        男
+                        {% elif user.user_sex == 0 %}
+                        女
+                        {% else %}
+                        未填写
+                        {% endif %}
+                    </p>
+
+
+                    <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2" onclick="editField('user_sex')">
+                        修改
+                    </button>
+
+                </div>
+
+                <div class="row pt-4">
+                    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">出生日期&nbsp;:</p>
+                    <p class="pr-5 pt-3" id="user_birthday">
+                        {% if user.user_birthday %}
+                        {{ user.user_birthday|date:"Y-m-d" }}
+                        {% else %}
+                        未填写
+                        {% endif %}
+                    </p>
+
+                    <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2"
+                            onclick="editField('user_birthday')">修改
+                    </button>
+                </div>
+
+
+                <div class="row pt-4">
+                    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;龄&nbsp;:</p>
+                    <p class="pr-5 pt-3" id="user_age">{{ user.user_age }}</p>
+                </div>
+
+                <div class="row pt-4">
+                    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">所在地区&nbsp;:</p>
+                    <p class="pr-5 pt-3" id="user_ip">{{ user.user_ip }}</p>
+
+                    <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2" onclick="editField('user_ip')">
+                        修改
+                    </button>
+                </div>
+
+                <div class="row pt-4">
+                    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">注册时间&nbsp;:</p>
+                    <p class="pr-5 pt-3">{{ user.user_register|date:"Y-m-d" }}</p>
+                </div>
+
+            </div>
+
+
+            <h6 class="font-weight-bold spanborder"><span></span></h6>
+
+        </div>
+    </div>
 </div>
-
-<div class="row pt-4">
-
-    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">用&nbsp;&nbsp;&nbsp;&nbsp;户&nbsp;&nbsp;ID&nbsp;:</p>
-    <p class="pr-5 pt-3" id="user_id">{{ user.user_id }}</p>
-</div>
-
-<div class="row pt-4">
-    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">个人介绍&nbsp;:</p>
-
-        <p class="pr-5 pt-3" id="user_introduction">{{ user.user_introduction }}</p>
-
-    <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2" onclick="editField('user_introduction')">修改</button>
-</div>
-
-<div class="row pt-4">
-    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别&nbsp;:</p>
-
-        <p class="pr-5 pt-3" id="user_sex">
-    		{% if user.user_sex == 1 %}
-        	男
-    	{% elif user.user_sex == 0 %}
-        	女
-    	{% else %}
-        	未填写
-    	{% endif %}
-		</p>
-
-
-        <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2" onclick="editField('user_sex')">修改</button>
-
-</div>
-
-<div class="row pt-4">
-    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">出生日期&nbsp;:</p>
-	<p class="pr-5 pt-3" id="user_birthday">
-		{% if user.user_birthday %}
-			{{ user.user_birthday|date:"Y-m-d"  }}
-		{% else %}
-			未填写
-		{% endif %}
-	</p>
-
-    <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2" onclick="editField('user_birthday')">修改</button>
-</div>
-
-
-<div class="row pt-4">
-    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;龄&nbsp;:</p>
-	<p class="pr-5 pt-3" id="user_age">{{ user.user_age }}</p>
-</div>
-
-<div class="row pt-4">
-    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">所在地区&nbsp;:</p>
-	<p class="pr-5 pt-3" id="user_ip">{{ user.user_ip }}</p>
-
-	 <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2" onclick="editField('user_ip')">修改</button>
-</div>
-
-<div class="row pt-4">
-    <p class="label pr-5 pt-3" style="display:inline-block; width: 150px;">注册时间&nbsp;:</p>
-    <p class="pr-5 pt-3">{{ user.user_register|date:"Y-m-d"  }}</p>
-</div>
-
-			</div>
-
-
-
-
-			<h6 class="font-weight-bold spanborder"><span></span></h6>
-
-		</div>
-	</div>
-</div>
-
 
 
 <!-- 弹窗内容 -->
-<div id="uploadModal" class="modal">
+<div class="modal" id="uploadModal">
     <div class="modal-content">
-        <h4 >上传头像</h4>
-        <form id="uploadForm" method="post" action="{% url 'upload_user' %}" enctype="multipart/form-data">
+        <h4>上传头像</h4>
+        <form action="{% url 'upload_user' %}" enctype="multipart/form-data" id="uploadForm" method="post">
             {% csrf_token %}
-			 <div id="imagePreview" class="pt-3 pb-3" ></div> <!-- 显示图像预览的容器 -->
-            <label for="avatar" class="btn btn-outline-success btn-sm my-2 my-sm-0 ">
+            <div class="pt-3 pb-3" id="imagePreview"></div> <!-- 显示图像预览的容器 -->
+            <label class="btn btn-outline-success btn-sm my-2 my-sm-0 " for="avatar">
                 选择文件
-                <input type="file" id="avatar" name="avatar" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                <input accept="image/*" id="avatar" name="avatar" onchange="previewImage(this)" style="display: none;"
+                       type="file">
             </label>
             <input class="btn btn-outline-success btn-sm my-2 my-sm-0" type="submit" value="上传">
 
-			<div class="align-self-center"><span id="noportrait"></span></div>
+            <div class="align-self-center"><span id="noportrait"></span></div>
         </form>
 
     </div>
 </div>
 <!-- End Main -->
-    
+
 <!--------------------------------------
 FOOTER
 --------------------------------------->
-<div class="container mt-9">
-	<footer class="bg-white border-top p-3 text-muted ">
-	<div class="row align-items-center justify-content-between">
-		<div>
-            <span class="navbar-brand mr-2"><strong>五元一次方程组</strong></span> 倾情制作
-			<script>document.write(new Date().getFullYear())</script>
-			 . Open most copyright.
-		</div>
-		<div>
-			点击 <a target="_blank" class="text-secondary font-weight-bold" href="https://github.com/Shugify/BlogsiteProject/">这里</a> 查看项目源码.
-		</div>
-	</div>
-	</footer>
+<div class="container mt-1">
+    <footer class="bg-white border-top p-3 text-muted ">
+        <div class="row align-items-center justify-content-between">
+            <div>
+                <span class="navbar-brand mr-2"><strong>五元一次方程组</strong></span> 倾情制作
+                <script>document.write(new Date().getFullYear())</script>
+                . Open most copyright.
+            </div>
+            <div>
+                点击 <a class="text-secondary font-weight-bold" href="https://github.com/Shugify/BlogsiteProject/"
+                        target="_blank">这里</a> 查看项目源码.
+            </div>
+        </div>
+    </footer>
 </div>
 <!-- End Footer -->
-    
+
 <!--------------------------------------
 JAVASCRIPTS
 --------------------------------------->
@@ -308,15 +323,15 @@ JAVASCRIPTS
 <script src="{% static 'app01/js/functions.js' %}" type="text/javascript"></script>
 
 <script>
-  function updateUserAvatar() {
-    var imgElement = document.getElementById('userAvatar');
-    var timestamp = new Date().getTime(); // 获取当前时间戳，用于强制刷新图像
-    var imageUrl = "{{ user.user_pfp.url }}?timestamp=" + timestamp;
-    imgElement.src = imageUrl; // 更新图像的 src 属性
-  }
+    function updateUserAvatar() {
+      var imgElement = document.getElementById('userAvatar');
+      var timestamp = new Date().getTime(); // 获取当前时间戳，用于强制刷新图像
+      var imageUrl = "{{ user.user_pfp.url }}?timestamp=" + timestamp;
+      imgElement.src = imageUrl; // 更新图像的 src 属性
+    }
 
-  // 初次加载时更新头像
-  updateUserAvatar();
+    // 初次加载时更新头像
+    updateUserAvatar();
 </script>
 
 {% csrf_token %}
@@ -326,8 +341,8 @@ JAVASCRIPTS
 
 <script>
 
-	function saveData(fieldName, newValue) {
-	 console.log("fieldName:", fieldName);
+    function saveData(fieldName, newValue) {
+     console.log("fieldName:", fieldName);
     console.log("newValue:", newValue);
 
 
@@ -378,7 +393,7 @@ JAVASCRIPTS
         field.appendChild(inputField);
     }
     else if(fieldName == 'user_ip') {
-    	var selectField = document.createElement("select");
+        var selectField = document.createElement("select");
     selectField.setAttribute("id", "edit-" + fieldName);
     selectField.className = "form-control";
 
@@ -388,7 +403,7 @@ JAVASCRIPTS
     "上海", "江苏", "浙江", "安徽", "福建", "江西", "山东", "河南",
     "湖北", "湖南", "广东", "广西", "海南", "重庆", "四川", "贵州",
     "云南", "西藏", "陕西", "甘肃", "青海", "宁夏", "新疆", "香港", "澳门", "台湾", "海外"
-	];
+    ];
     for (var i = 0; i < provinces.length; i++) {
         var option = document.createElement("option");
         option.text = provinces[i];
@@ -402,41 +417,41 @@ JAVASCRIPTS
 
     }
      else if (fieldName == 'user_birthday') {
-       	var inputField = document.createElement("input");
-    	inputField.setAttribute("type", "date");
-    	inputField.setAttribute("id", "edit-" + fieldName);
+           var inputField = document.createElement("input");
+        inputField.setAttribute("type", "date");
+        inputField.setAttribute("id", "edit-" + fieldName);
 
-    	// 设置最大日期为当前日期
-    	var currentDate = new Date().toISOString().split("T")[0];
-    	inputField.setAttribute("max", currentDate);
+        // 设置最大日期为当前日期
+        var currentDate = new Date().toISOString().split("T")[0];
+        inputField.setAttribute("max", currentDate);
 
-    	inputField.value = currentValue; // 设置当前值
-    	inputField.className = "form-control";
-    	field.appendChild(inputField);
+        inputField.value = currentValue; // 设置当前值
+        inputField.className = "form-control";
+        field.appendChild(inputField);
     }
     else if (fieldName == 'user_introduction') {
         var inputField = document.createElement("textarea");
-    	inputField.setAttribute("id", "edit-" + fieldName);
-    	inputField.setAttribute("maxlength", "200"); // 设置最大字符数为200，你可以根据需要调整
-    	inputField.value = currentValue; // 设置当前值
-    	inputField.className = "form-control";
-    	inputField.style.height = "100px"; // 设置输入框高度为200px，你可以根据需要调整高度
-		inputField.style.width = "600px"; // 设置输入框高度为200px，你可以根据需要调整高度
-		inputField.style.position = "relative"; // 设置相对定位
-    	inputField.addEventListener('input', function() {
-        	// 通过事件监听器实时更新剩余字符数
-        	var remainingChars = 200 - inputField.value.length;
-        	document.getElementById('remainingChars').innerText = remainingChars+ " / 200";
-    	});
-    	field.appendChild(inputField);
+        inputField.setAttribute("id", "edit-" + fieldName);
+        inputField.setAttribute("maxlength", "200"); // 设置最大字符数为200，你可以根据需要调整
+        inputField.value = currentValue; // 设置当前值
+        inputField.className = "form-control";
+        inputField.style.height = "100px"; // 设置输入框高度为200px，你可以根据需要调整高度
+        inputField.style.width = "600px"; // 设置输入框高度为200px，你可以根据需要调整高度
+        inputField.style.position = "relative"; // 设置相对定位
+        inputField.addEventListener('input', function() {
+            // 通过事件监听器实时更新剩余字符数
+            var remainingChars = 200 - inputField.value.length;
+            document.getElementById('remainingChars').innerText = remainingChars+ " / 200";
+        });
+        field.appendChild(inputField);
 
-    	var remainingCharsElement = document.createElement('span');
-    	remainingCharsElement.id = 'remainingChars';
-    	remainingCharsElement.innerText =  200 - inputField.value.length + " / 200";
-    	remainingCharsElement.className = 'remaining-chars'; // 添加自定义类名
-    	remainingCharsElement.style.marginRight = "10px"; // 设置右边距
-    	remainingCharsElement.style.color = "grey"; // 设置颜色为灰色
-    	field.appendChild(remainingCharsElement); // 将剩余字符数元素添加到输入框下方
+        var remainingCharsElement = document.createElement('span');
+        remainingCharsElement.id = 'remainingChars';
+        remainingCharsElement.innerText =  200 - inputField.value.length + " / 200";
+        remainingCharsElement.className = 'remaining-chars'; // 添加自定义类名
+        remainingCharsElement.style.marginRight = "10px"; // 设置右边距
+        remainingCharsElement.style.color = "grey"; // 设置颜色为灰色
+        field.appendChild(remainingCharsElement); // 将剩余字符数元素添加到输入框下方
     }
      else if (fieldName == 'user_sex') {
         var maleLabel = document.createElement("label");
@@ -444,7 +459,7 @@ JAVASCRIPTS
         maleInput.setAttribute("type", "radio");
         maleInput.setAttribute("name", "gender");
         maleInput.setAttribute("value", "male");
-		maleInput.style.marginRight = "8px"; // 设置右边距
+        maleInput.style.marginRight = "8px"; // 设置右边距
         maleLabel.appendChild(maleInput);
         maleLabel.appendChild(document.createTextNode("男"));
 
@@ -453,8 +468,8 @@ JAVASCRIPTS
         femaleInput.setAttribute("type", "radio");
         femaleInput.setAttribute("name", "gender");
         femaleInput.setAttribute("value", "female");
-		femaleInput.style.marginRight = "8px"; // 设置右边距
-		femaleInput.style.marginLeft = "15px";
+        femaleInput.style.marginRight = "8px"; // 设置右边距
+        femaleInput.style.marginLeft = "15px";
         femaleLabel.appendChild(femaleInput);
         femaleLabel.appendChild(document.createTextNode("女"));
 
@@ -473,7 +488,7 @@ JAVASCRIPTS
     var saveButton = document.createElement("button");
     saveButton.innerText = "Save";
     saveButton.className = "btn btn-outline-success btn-sm my-2 my-sm-2 mr-2"; // Add button classes
-   	saveButton.style.marginLeft = "15px";
+       saveButton.style.marginLeft = "15px";
     saveButton.onclick = function() {
         saveEdit(fieldName);
     };
@@ -498,44 +513,44 @@ JAVASCRIPTS
 
         function saveEdit(fieldName) {
             var field = document.getElementById(fieldName);
-    		var newValue;
+            var newValue;
 
-    		if (fieldName == 'user_sex') {
-        		var maleInput = document.querySelector('input[name="gender"][value="male"]');
-        		var femaleInput = document.querySelector('input[name="gender"][value="female"]');
-        		newValue = maleInput.checked ? "男" : "女";
-    		}
-    		else if (fieldName == 'user_birthday') {
-        		newValue = document.getElementById("edit-" + fieldName).value;
-        		// 计算年龄
-        		var birthDate = new Date(newValue);
-        		var currentDate = new Date();
-        		var age = currentDate.getFullYear() - birthDate.getFullYear();
-        		// 如果今年还没过生日，则年龄减一
-        		if (currentDate.getMonth() < birthDate.getMonth() || (currentDate.getMonth() == birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())) {
-            		age--;
-        		}
-        		// 更新用户年龄显示
-        		document.getElementById("user_age").innerText = age;
-    		}
-    		else if (fieldName == 'user_name') {
-        		newValue = document.getElementById("edit-" + fieldName).value;
+            if (fieldName == 'user_sex') {
+                var maleInput = document.querySelector('input[name="gender"][value="male"]');
+                var femaleInput = document.querySelector('input[name="gender"][value="female"]');
+                newValue = maleInput.checked ? "男" : "女";
+            }
+            else if (fieldName == 'user_birthday') {
+                newValue = document.getElementById("edit-" + fieldName).value;
+                // 计算年龄
+                var birthDate = new Date(newValue);
+                var currentDate = new Date();
+                var age = currentDate.getFullYear() - birthDate.getFullYear();
+                // 如果今年还没过生日，则年龄减一
+                if (currentDate.getMonth() < birthDate.getMonth() || (currentDate.getMonth() == birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                // 更新用户年龄显示
+                document.getElementById("user_age").innerText = age;
+            }
+            else if (fieldName == 'user_name') {
+                newValue = document.getElementById("edit-" + fieldName).value;
 
-        		document.getElementById("main_name").innerText = newValue;
-    		}
-    		else {
-        		newValue = document.getElementById("edit-" + fieldName).value;
-    		}
+                document.getElementById("main_name").innerText = newValue;
+            }
+            else {
+                newValue = document.getElementById("edit-" + fieldName).value;
+            }
 
-    		field.innerText = newValue;
+            field.innerText = newValue;
 
-    		saveData(fieldName, newValue); // Save the updated data
+            saveData(fieldName, newValue); // Save the updated data
 
-    		// Show edit button
-    		var editButton = field.parentElement.querySelector("button");
-    		if (editButton) {
-        		editButton.style.display = "inline";
-    		}
+            // Show edit button
+            var editButton = field.parentElement.querySelector("button");
+            if (editButton) {
+                editButton.style.display = "inline";
+            }
         }
 
 
@@ -575,13 +590,13 @@ JAVASCRIPTS
 
 <script>
 
-	// 获取模态框和关闭按钮
+    // 获取模态框和关闭按钮
   var modal = document.getElementById('uploadModal');
   var span = document.getElementsByClassName("close")[0];
 
   // 点击图片时显示模态框
   document.getElementById('userAvatar').addEventListener('click', function() {
-  	modal.style.display = "flex"; // 将弹窗显示
+      modal.style.display = "flex"; // 将弹窗显示
 
 
   });
