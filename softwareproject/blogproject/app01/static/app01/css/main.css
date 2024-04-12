@@ -33,7 +33,7 @@ body {
   line-height: 1.6;
   color: #212529;
   text-align: left;
-  background-color: #fff; }
+  background-color:#F5F6F7; }
 
 [tabindex="-1"]:focus {
   outline: 0 !important; }
@@ -342,7 +342,7 @@ body {
   line-height: 1.6;
   color: #212529;
   text-align: left;
-  background-color: #fff; }
+  background-color:#F5F6F7; }
 
 [tabindex="-1"]:focus {
   outline: 0 !important; }
@@ -732,7 +732,8 @@ pre {
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
-  margin-left: auto; }
+  margin-left: auto;
+  background-color: #FFFFFF; }
   @media (min-width: 576px) {
     .container {
       max-width: 540px; } }
@@ -751,7 +752,8 @@ pre {
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
-  margin-left: auto; }
+  margin-left: auto;
+   background-color: #FFFFFF;}
 
 .row {
   display: flex;
@@ -2649,24 +2651,24 @@ fieldset:disabled a.btn {
       box-shadow: 0 0 0 0.2rem rgba(53, 189, 255, 0.5); }
 
 .btn-outline-gray {
-  color: #ced4da;
+  color: #6A6D70;
   background-color: transparent;
   background-image: none;
-  border-color: #ced4da; }
+  border-color: #6A6D70; }
   .btn-outline-gray:hover {
     color: #212529;
-    background-color: #ced4da;
-    border-color: #ced4da; }
+    background-color: #6A6D70;
+    border-color: #6A6D70; }
   .btn-outline-gray:focus, .btn-outline-gray.focus {
     box-shadow: 0 0 0 0.2rem rgba(206, 212, 218, 0.5); }
   .btn-outline-gray.disabled, .btn-outline-gray:disabled {
-    color: #ced4da;
+    color: #6A6D70;
     background-color: transparent; }
   .btn-outline-gray:not(:disabled):not(.disabled):active, .btn-outline-gray:not(:disabled):not(.disabled).active,
   .show > .btn-outline-gray.dropdown-toggle {
     color: #212529;
-    background-color: #ced4da;
-    border-color: #ced4da; }
+    background-color: #6A6D70;
+    border-color: #6A6D70; }
     .btn-outline-gray:not(:disabled):not(.disabled):active:focus, .btn-outline-gray:not(:disabled):not(.disabled).active:focus,
     .show > .btn-outline-gray.dropdown-toggle:focus {
       box-shadow: 0 0 0 0.2rem rgba(206, 212, 218, 0.5); }
