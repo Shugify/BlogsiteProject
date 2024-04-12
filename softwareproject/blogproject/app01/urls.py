@@ -16,8 +16,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     # 邮箱登录页面
     path('email_login/', views.email_login, name='email_login'),
-    # 个人中心页面
-    path('self_center/', views.self_center, name='self_center'),
+
     # 主页面
     path('home/', views.home, name='home'),
     # 发布博客
@@ -43,6 +42,14 @@ urlpatterns = [
     path('category/', views.category, name='category'),
     # 评论管理
     path('post_comment/<int:article_id>/', views.post_comment, name='post_comment'),
+
+
+    # 账户信息页
+    path('account_setting1/', views.account_setting1, name='account_setting1'),
+    path('account_setting1_password/', views.account_setting1_password, name='account_setting1_password'),
+    path('upload_user/', views.upload_user, name='upload_user'),
+    path('logout/', views.logout, name='logout'),
+    path('dispose_account/', views.dispose_account, name='dispose_account'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

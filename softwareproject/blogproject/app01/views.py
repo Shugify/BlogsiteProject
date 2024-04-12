@@ -21,6 +21,10 @@ from django.contrib import messages
 # 引入分页模块
 from django.core.paginator import Paginator
 
+import os
+from django.contrib.auth import logout as django_logout
+from django.utils import timezone
+
 
 # 首页
 def index(request):
@@ -108,6 +112,7 @@ def user_login(request):
                 request.session['user_mail'] = user.user_mail
                 request.session['user_phone'] = user.user_phone
                 request.session['user_name'] = user.user_name
+
                 return JsonResponse({'success': True})
             else:
                 return JsonResponse({'success': False, 'error_type': 'wrongpwd', 'error': '密码错误'})
@@ -140,14 +145,19 @@ def register(request):
             if models.User.objects.filter(user_phone=phone).exists():
                 return JsonResponse({'success': False, 'error_type': 'phone_exists', 'error': '该电话已被注册'})
 
-            # 查询数据库中已有用户的数量
-            existing_users_count = models.User.objects.count()
-            # 自动生成新用户的 id 号
-            # 查询数据库中最大的ID号
-            max_user_id = models.User.objects.latest('user_id').user_id if existing_users_count > 0 else 100000
+            # 检查数据库中最大的用户ID
+            max_user_id = models.User.objects.latest('user_id').user_id
 
+            max_user_id = int(max_user_id) if max_user_id else 0
+            print("max_user_id:", max_user_id)
+
+            if max_user_id < 1000000:
+                new_user_id = 1000001
+            else:
+                new_user_id = max_user_id + 1
+            while models.User.objects.filter(user_id=new_user_id).exists():
+                new_user_id += 1
             # 自动生成新用户的 id 号
-            new_user_id = int(max_user_id) + 1
 
             user_register_date = datetime.now()  # 获取注册时间
             try:
@@ -204,12 +214,6 @@ def email_login(request):
             return JsonResponse({'success': False, 'error_type': 'eempty', 'error': '存在未填项！'})
     else:
         return render(request, 'app01/email_login.html')
-
-
-# 个人信息页
-def self_center(request):
-    pass
-    return render(request, 'app01/self_center.html')
 
 
 # 管理员登录
@@ -329,12 +333,13 @@ def post_comment(request, article_id):
             new_comment.comment_user = request.user
             new_comment.save()  # comment_created 将在此时自动设置为当前时间
             # 可以重定向或渲染相同页面
-            return redirect(reverse('article',  kwargs={'id': article_id}))
+            return redirect(reverse('article', kwargs={'id': article_id}))
         else:
             return HttpResponse("表单内容有误，请重新填写。")
     # 处理错误请求
     else:
         return HttpResponse("发表评论仅接受POST请求。")
+
 
 # 个人评论列举页
 def my_comment(request):
@@ -380,10 +385,162 @@ def delete_comment(request, id):
 #     pass
 #     return render(request, 'app01/article.html')
 
-
+# 个人信息页
 def account_setting(request):
-    pass
-    return render(request, 'app01/account_setting.html')
+    if request.method == 'POST':
+        field_name = request.POST.get('field_name')
+        new_value = request.POST.get('new_value')
+        # print("field_name:", field_name)
+        # print("new_value:", new_value)
+        # 在这里处理并保存更新后的数据到数据库中
+        # 例如：
+        user = models.User.objects.get(user_id=request.session['user_id'])
+
+        if field_name == 'user_name':
+            user.user_name = new_value
+        elif field_name == 'user_introduction':
+            user.user_introduction = new_value
+        elif field_name == 'user_ip':
+            user.user_ip = new_value
+        elif field_name == 'user_sex':
+            if new_value == '男':
+                user.user_sex = 1
+            else:
+                user.user_sex = 0
+        elif field_name == 'user_birthday':
+            user.user_birthday = new_value
+            birthdate = datetime.strptime(new_value, '%Y-%m-%d')
+            today = datetime.today()
+            age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+            user.user_age = age
+
+        user.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Data saved successfully'})
+    elif request.method == 'GET':
+
+        # 获取最新的用户信息
+        user = User.objects.get(user_id=request.session['user_id'])
+        user_register_date = user.user_register  # 假设这是用户注册的日期
+        current_date = timezone.now().date()  # 获取当前日期
+        days_diff = (current_date - user_register_date).days  # 计算注册到当前的天数
+
+        context = {
+            'days_diff': days_diff,
+        }
+        return render(request, 'app01/account_setting.html', context)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
+# 账号信息显示页
+def account_setting1(request):
+    if request.method == 'POST':
+        field_name = request.POST.get('field_name')
+        new_value = request.POST.get('new_value')
+        # print("field_name:", field_name)
+        # print("new_value:", new_value)
+        # 在这里处理并保存更新后的数据到数据库中
+        # 例如：
+        user = models.User.objects.get(user_id=request.session['user_id'])
+
+        if field_name == 'user_phone':
+            # 检查电话是否已经存在
+            if new_value != user.user_phone and models.User.objects.filter(user_phone=new_value).exists():
+                return JsonResponse({'success': False, 'error_type': 'phone_exists', 'message': 'phone exist'})
+            user.user_phone = new_value
+        elif field_name == 'user_mail':
+            # 检查邮箱是否已经存在
+            if new_value != user.user_mail and models.User.objects.filter(user_mail=new_value).exists():
+                return JsonResponse({'success': False, 'error_type': 'email_exists', 'message': 'mail exist'})
+            user.user_mail = new_value
+
+        user.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Data saved successfully'})
+    elif request.method == 'GET':
+        return render(request, 'app01/account_setting1.html')
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
+# 用户头像信息更新
+def upload_user(request):
+    if request.method == 'POST':
+        try:
+            avatar = request.FILES['avatar']
+            filename, ext = os.path.splitext(avatar.name)
+
+            # 获取当前用户的ID作为文件名前缀
+            user_id = request.session.get('user_id')
+            unique_filename = f"{user_id}_portrait{ext}"
+
+            with open(f'app01/static/app01/image/myimage/{unique_filename}', 'wb') as destination:
+                for chunk in avatar.chunks():
+                    destination.write(chunk)
+
+            # 更新数据库中用户的头像路径
+            user = User.objects.get(user_id=user_id)
+            user.user_pfp = f'app01/static/app01/image/myimage/{unique_filename}'
+            user.save()
+
+            # 重定向到个人信息页面
+            return render(request, 'app01/account_setting.html')
+        except KeyError:
+            # 如果没有选择文件，则返回错误消息
+            error_message = "请选择要上传的文件"
+            return render(request, 'app01/account_setting.html', {'error_message': error_message})
+
+    else:
+        # 如果不是 POST 请求，则重定向到个人信息页面
+        return render(request, 'app01/account_setting.html')
+
+
+# 修改密码
+def account_setting1_password(request):
+    if request.method == 'POST':
+        change_pwd_form = forms.UserChangePwdForm(request.POST)
+        if change_pwd_form.is_valid():
+            old_password = change_pwd_form.cleaned_data.get('oldPassword')
+            new_password = change_pwd_form.cleaned_data.get('newPassword')
+            check_password = change_pwd_form.cleaned_data.get('checkPassword')
+
+            print("get form successfully", new_password)
+
+            user = models.User.objects.get(user_id=request.session['user_id'])
+
+            # 进行密码匹配验证
+            if new_password != check_password:
+                return JsonResponse({'success': False, 'error_type': 'pwdMismatch', 'error': '密码不匹配'})
+
+            if old_password == user.user_password:
+                user.user_password = new_password
+                user.save()
+                print("save success", new_password)
+                return JsonResponse({'success': True, 'message': '密码修改成功'})
+            else:
+                print("old pwd error")
+                return JsonResponse({'success': False, 'error_type': 'old_pwd_error', 'error': '原密码错误'})
+        else:
+            print("form error")
+            return JsonResponse({'success': False, 'error_type': 'invalidForm', 'error': '表单填写不完整或格式不正确'})
+    else:
+        return render(request, 'app01/account_setting1_password.html')
+
+
+def logout(request):
+    django_logout(request)
+    request.session.clear()
+    return JsonResponse({'success': True})
+
+
+def dispose_account(request):
+    user = models.User.objects.get(user_id=request.session['user_id'])
+    user.user_state = 1
+    user.save()
+    django_logout(request)
+    request.session.clear()
+    return JsonResponse({'success': True})
 
 
 def category(request):

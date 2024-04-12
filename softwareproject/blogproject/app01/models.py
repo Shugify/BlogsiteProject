@@ -31,7 +31,7 @@ class User(AbstractBaseUser):  # 用户信息表
     # 用户名，默认佚名
     user_name = models.CharField(max_length=255, null=True, default='anonymity')
     # 用户个性签名
-    user_introduction = models.CharField(max_length=255, null=True)
+    user_introduction = models.CharField(max_length=255, null=True, default='There is nothing.')
     # 用户头像profile photo
     user_pfp = models.ImageField(default='app01/static/app01/image/default.jpg')
     # 用户注册日期

@@ -49,3 +49,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comment_content']
+
+
+class UserChangePwdForm(forms.Form):
+    oldPassword = forms.CharField(widget=forms.PasswordInput, label='原密码')
+    newPassword = forms.CharField(widget=forms.PasswordInput, label='新密码')
+    checkPassword = forms.CharField(widget=forms.PasswordInput, label='确认密码')
