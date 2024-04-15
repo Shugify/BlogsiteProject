@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 <!-- Main CSS -->
 <link href="{% static 'app01/css/main.css' %}" rel="stylesheet"/>
+<link href="{% static 'app01/css/article.css' %}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -55,60 +56,107 @@
 </div>
 </nav>
 <!-- End Navbar -->
-    
-<!--------------------------------------HEADER--------------------------------------->
-<div class="container mt-1 pt-2">
-	<div class="jumbotron jumbotron-fluid mb-3 pl-0 pt-0 pb-0 bg-white position-relative">
-		<div class="h-100 front">
-			<div class="row justify-content-between">
-				<div class=" align-self-center">
-					<h1 class="display-4 secondment mb-3 font-weight-bold">{{ article.article_title}}</h1>
-                        <span class="text-muted d-block ml-2" style="text-align: center;">
-                            <span class="pr-5">作  者：{{ author_name }} </span>
-                            <span class="pr-5">发布时间：{{ article.article_created |date:"Y年m月d日 H时i分" }} </span>
-                            <span class="pr-5">阅读人数：{{ article.article_views }}   </span>
-                            <span >上次更新：{{ article.article_updated |date:"Y年m月d日 H时i分" }} </span>
-                        </span>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- End Header -->
-    
+
 <!--------------------------------------MAIN--------------------------------------->
-<div class="pt-4 pb-4">
-	<div class="row justify-content-center">
-		<div class="col-lg-2 mb-4 col-md-2">
-			<div class="sticky-top text-center">
-				<div class="text-muted">
-					Share this
-				</div>
-				<div class="share d-inline-block">
-					<!-- AddToAny BEGIN -->
-					<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
-						<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-						<a class="a2a_button_facebook"></a>
-						<a class="a2a_button_twitter"></a>
-					</div>
-					<script async src="https://static.addtoany.com/menu/page.js"></script>
-					<!-- AddToAny END -->
-				</div>
-			</div>
-		</div>
-		<div class=" container col-md-12 col-lg-8">
-                <div class="col-12 ">
-                    <!-- 文章内容 -->
-                    <p style="white-space: pre-wrap;">
-                        {{ article.article_content }}
-                    </p>
+<div class="main_father mr-lg-3 ml-lg-3">
+    <!----------------------------------ASIDE--------------------------------------->
+    <aside class="blog_aside">
+        <div class="aside-box">
+            <div class="d-flex align-center ml-3 bg-white">
+                 <div class="user-avatar-container mr-2">
+                    <img alt="用户头像" class="rounded-circle" height="80"
+                         src="{{ author.user_pfp.url }}?timestamp={{ timestamp }}">
                 </div>
-		</div>
-	</div>
+                <div class="col">
+                    <div style="font-size: 20px;font-weight: bold;margin:15px 0 10px 10px;">
+                        {{author_name}}
+                    </div>
+                    <div style="font-size: 15px;">
+                        已入驻博界&nbsp;{{days_diff}}&nbsp;天
+                    </div>
+                </div>
+            </div>
+            <div class="aside-row h-100">
+                <span class="aside-block ml-3 align-center">
+                    博客数
+                </span>
+                <hr class="vertical-line aside-block align-center" />  
+                <span class="aside-block ml-3 align-center">
+                    {{ author_article_count }}篇
+                </span>
+            </div>
+        </div>
+        <div class="aside-box mt-2 bg-white">
+            <img src="{{ article.article_image.url }}" alt="封面图走丢了~">
+        </div>
+        
+        <!-- 显示热门文章列表 -->  
+        {% if top_articles_views %}  
+            <div class="aside-box mt-2 pt-3 pb-3 pl-3 pr-3">
+                <h4 class="font-weight-bold spanborder align-center"><span>热门推荐</span></h4>
+                 <ul>  
+                    {% for article in top_articles_views %}  
+                        <li><a href="{% url 'article' article.article_id %}">{{ article.article_title }}</a></li>  
+                    {% endfor %}  
+                 </ul>
+            </div>
+        {% else %}  
+            <p>暂无热门推荐</p>  
+        {% endif %}
+        
+        <div class="text-center">
+            <div class="text-muted mt-4">
+                Share this
+            </div>
+            <div class="d-inline-block">
+                <!-- AddToAny BEGIN -->
+                <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+                    <a class="a2a_button_facebook"></a>
+                    <a class="a2a_button_twitter"></a>
+                    <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+                </div>
+                <script async src="https://static.addtoany.com/menu/page.js"></script>
+                <!-- AddToAny END -->
+            </div>
+        </div>
+    </aside>
+    <!-- End ASIDE -->
+    
+    <!----------------------------------SECTION--------------------------------------->
+    <section class="blog_content pt-3">
+         <!-------------------------------HEADER--------------------------------->
+        <div class="ml-4 mr-3 mt-3">
+            <h1 class="display-4 secondment mb-3 font-weight-bold text-center">{{ article.article_title}}</h1>
+            <span class="text-muted d-block align-center" style="text-align: center;">
+                <span class="pr-5">作  者：{{ author_name }} </span>
+                <span>发布时间：{{ article.article_created |date:"Y年m月d日 H时i分" }} </span>
+                <br>
+                <span class="pr-5">阅读人数：{{ article.article_views }}   </span>
+                <span >上次更新：{{ article.article_updated |date:"Y年m月d日 H时i分" }} </span>
+            </span>
+        </div>
+        <!-- End Header -->
+        <div class="pt-4 pb-4 ml-1">
+            <div class="row justify-content-center">
+                <div class="container ml-5 mr-5">
+                        <div class="col-12">
+                            <!-- 文章内容 -->
+                            <p style="white-space: pre-wrap;">
+                                {{ article.article_content }}
+                            </p>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End SECTION -->
+    
+    
 </div>
 
+
 <!-- 发表评论 -->
-<div class="container">
+<div class="comment">
     <hr>
     <div>
         <form
@@ -155,53 +203,11 @@
 
 </div>
 
-
-<div class="container pt-4 pb-4">
-	<h4 class="font-weight-bold spanborder"><span>再来一篇！</span></h4>
-	<div class="row">
-		<div class="col-lg-6">
-			<div class="card border-0 mb-4 box-shadow h-xl-300">
-				<div style="background-image: url('app01/static/app01/image/demo/9.jpg'); height: 150px; background-size: cover; background-repeat: no-repeat;">
-				</div>
-				<div class="card-body px-0 pb-0 d-flex flex-column align-items-start">
-					<h2 class="h4 font-weight-bold">
-					<a class="text-dark" href="#">Brain Stimulation Relieves Depression Symptoms</a>
-					</h2>
-					<p class="card-text">
-						 Researchers have found an effective target in the brain for electrical stimulation to improve mood in people suffering from depression.
-					</p>
-					<div>
-						<small class="d-block"><a class="text-muted" href="http://127.0.0.1:8000/author/">Favid Rick</a></small>
-						<small class="text-muted">Dec 12 · 5 min read</small>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-6">
-			<div class="card border-0 mb-4 box-shadow h-xl-300">
-				<div style="background-image: url(app01/static/app01/image/demo/10.jpg); height: 150px; background-size: cover; background-repeat: no-repeat;">
-				</div>
-				<div class="card-body px-0 pb-0 d-flex flex-column align-items-start">
-					<h2 class="h4 font-weight-bold">
-					<a class="text-dark" href="#">Brain Stimulation Relieves Depression Symptoms</a>
-					</h2>
-					<p class="card-text">
-						 Researchers have found an effective target in the brain for electrical stimulation to improve mood in people suffering from depression.
-					</p>
-					<div>
-						<small class="d-block"><a class="text-muted" href="http://127.0.0.1:8000/author/">Favid Rick</a></small>
-						<small class="text-muted">Dec 12 · 5 min read</small>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 <!-- End Main -->
     
 <!--------------------------------------FOOTER--------------------------------------->
-<div class="container mt-1">
-	<footer class="bg-white border-top p-3 text-muted small">
+<div class="mt-1 ml-5 mr-5">
+	<footer class=" border-top p-3 text-muted small">
 	<div class="row align-items-center justify-content-between">
 		<div>
             <span class="navbar-brand mr-2"><strong>五元一次方程组</strong></span> 倾情制作
