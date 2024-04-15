@@ -301,6 +301,22 @@ def delete_article(request, id):
 def article_detail(request, id):
     # 取出相应的文章
     article = get_object_or_404(Article, article_id=id)
+    # 获取文章的作者
+    author = article.article_author
+    # 作者文章数
+    author_article_count = Article.objects.filter(article_author=author).count()
+    # 获取最新的用户信息
+    user = article.article_author
+    user_register_date = user.user_register  # 假设这是用户注册的日期
+    current_date = timezone.now().date()  # 获取当前日期
+    days_diff = (current_date - user_register_date).days  # 计算注册到当前的天数
+    # 获取按照浏览量排序的文章列表,排除本篇
+    top_articles_views = Article.objects.exclude(article_id=id).order_by('-article_views')[:5]
+    # 检查是否有热门文章
+    if not top_articles_views.exists():
+        no_top_articles = True
+    else:
+        no_top_articles = False
     # 取出文章评论
     comments = Comment.objects.filter(comment_article=article)
     # 浏览量+1
@@ -310,12 +326,19 @@ def article_detail(request, id):
     article_commentcnt = comments.count()
     article.article_commentcnt = article_commentcnt
     article.save(update_fields=['article_commentcnt'])
+
     # 字典，内容要传递给模版
     context = {'article': article,
+               'author': author,
                'author_name': article.article_author.user_name,
                'post_id': article.article_id,  # 确保 post_id 传递给模板
                'comments': comments,
-               'article_commentcnt': article_commentcnt}
+               'article_commentcnt': article_commentcnt,
+               'author_article_count': author_article_count,  # 传递作者文章总数给模板
+               'days_diff': days_diff,  # 传递注册天数
+               'top_articles_views': top_articles_views,  # 传递热门文章
+               'no_top_articles':no_top_articles,
+               }
     # 载入模板，并返回context对象
     return render(request, 'app01/article.html', context)
 
