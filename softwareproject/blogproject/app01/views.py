@@ -507,8 +507,15 @@ def upload_user(request):
             user.user_pfp = f'app01/static/app01/image/myimage/{unique_filename}'
             user.save()
 
-            # 重定向到个人信息页面
-            return render(request, 'app01/account_setting.html')
+            user = User.objects.get(user_id=request.session['user_id'])
+            user_register_date = user.user_register  # 假设这是用户注册的日期
+            current_date = timezone.now().date()  # 获取当前日期
+            days_diff = (current_date - user_register_date).days  # 计算注册到当前的天数
+
+            context = {
+                'days_diff': days_diff,
+            }
+            return render(request, 'app01/account_setting.html', context)
         except KeyError:
             # 如果没有选择文件，则返回错误消息
             error_message = "请选择要上传的文件"
@@ -517,6 +524,7 @@ def upload_user(request):
     else:
         # 如果不是 POST 请求，则重定向到个人信息页面
         return render(request, 'app01/account_setting.html')
+
 
 
 # 修改密码
