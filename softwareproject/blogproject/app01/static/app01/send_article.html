@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+<meta charset="utf-8"/>
+<link rel="apple-touch-icon" sizes="76x76" href="./assets/img/favicon.ico">
+<link rel="icon" type="image/png" href="./assets/img/favicon.ico">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<title>BlogSphere博界——发表文章</title>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Source+Sans+Pro:400,700" rel="stylesheet">
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+<!-- Main CSS -->
+<link href="{% static 'app01/css/main.css' %}" rel="stylesheet"/>
+</head>
+<body>
+<nav class="topnav navbar navbar-expand-lg navbar-light bg-white fixed-top">
+<div class="container">
+	<a class="navbar-brand" href="http://127.0.0.1:8000/home/"><strong>主页面</strong></a>
+	<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+	<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="navbar-collapse collapse" id="navbarColor02" style="">
+
+		<ul class="navbar-nav mr-auto d-flex align-items-center">
+
+			<li class="nav-item">
+			<a class="nav-link" href="http://127.0.0.1:8000/my_article/">我的blog</a>
+			</li>
+			<li class="nav-item">
+			<a class="nav-link" href="http://127.0.0.1:8000/category/">分类</a>
+			</li>
+
+		</ul>
+
+
+		<ul class="navbar-nav ml-auto d-flex align-items-center">
+			<li class="nav-item highlight">
+			 	 <form class="form-inline my-2 my-lg-0">
+        			<input class="form-control form-control-sm mr-sm-2 rounded" type="search" placeholder="关键字搜索文章" aria-label="Search" id="navSearchInput">
+
+        			<a class="btn btn-outline-success btn-sm my-2 my-sm-0" href="http://127.0.0.1:8000/search/">搜索</a>
+
+    			</form>
+			</li>
+		</ul>
+
+
+
+		<ul class="navbar-nav ml-auto d-flex align-items-center">
+			<li class="nav-item highlight">
+			<a class="nav-link" href="http://127.0.0.1:8000/account_setting/">个人中心</a>
+			</li>
+		</ul>
+	</div>
+</div>
+</nav>
+<!-- End Navbar -->
+<!-- 写文章表单 -->
+<div class="container mt-1 pt-2">
+    <div class="row">
+        <div class="col-12">
+            <br>
+            <!-- 提交文章的表单 -->
+            <form method="post" action="{% url 'send_article' %}" enctype="multipart/form-data">
+                <!-- Django中需要POST数据的地方都必须有csrf_token -->
+                {% csrf_token %}
+                <!-- 文章标题 -->
+                <div class="form-group">
+                    <!-- 标签 -->
+                    <label for="article_title">文章标题</label>
+                    <!-- 文本框 -->
+                    <input type="text" class="form-control" id="article_title" name="article_title">
+                </div>
+				<!-- 文章标签 -->
+				<div class="form-group">
+					<label for="tags">标签</label>
+					<input type="text" class="form-control col-3" id="tags" name="tags">
+				</div>
+                <!-- 文章正文 -->
+                <div class="form-group">
+                    <label for="article_content">文章正文</label>
+                    <!-- 文本区域 -->
+                    <textarea type="text" class="form-control" id="article_content" name="article_content" rows="12"></textarea>
+                </div>
+				<!-- 上传图片按钮 -->
+				<div class="form-group">
+					<label for="article_image">上传图片</label>
+					<input type="file" class="form-control-file" id="article_image" name="article_image">
+				</div>
+                <!-- 提交按钮 -->
+                <button class="btn btn-outline-success btn-sm my-2 my-sm-0" type="submit">发布</button>
+				{% if messages %}
+				  <ul class="messages">
+					{% for message in messages %}
+					  <li>{{ message }}</li>
+					{% endfor %}
+				  </ul>
+				{% endif %}
+
+            </form>
+        </div>
+    </div>
+</div>
+<!-- 添加你的 JavaScript 代码 -->
+<script>
+    function submitSuccess() {
+        alert("发布成功！");
+    }
+</script>
+</body>
+</html>
