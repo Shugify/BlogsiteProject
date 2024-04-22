@@ -579,7 +579,7 @@ JAVASCRIPTS
         if (input.files && input.files[0]) {
             var reader = new FileReader(); // 创建一个FileReader对象
             reader.onload = function(e) {
-                preview.innerHTML = '<img src="' + e.target.result + '" alt="预览图像" style="max-width: 100%;">'; // 在预览容器中显示图像
+                preview.innerHTML = '<img src="' + e.target.result + '" alt="预览图像" style="max-width: 100%; max-height:400px;">'; // 在预览容器中显示图像
             }
             reader.readAsDataURL(input.files[0]); // 读取图像文件并将其转换为base64格式
         } else {
