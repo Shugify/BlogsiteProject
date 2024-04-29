@@ -87,7 +87,9 @@
             </div>
         </div>
         <div class="aside-box mt-2 bg-white">
-            <img src="{{ article.article_image.url }}" alt="封面图走丢了~">
+            {% if article.article_image %}
+                <img src="{{ article.article_image.url }}" alt="封面图走丢了~">
+            {% endif %}
         </div>
         
         <!-- 显示热门文章列表 -->  
