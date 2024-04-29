@@ -52,6 +52,29 @@ urlpatterns = [
     path('upload_user/', views.upload_user, name='upload_user'),
     path('logout/', views.logout, name='logout'),
     path('dispose_account/', views.dispose_account, name='dispose_account'),
+
+    #管理员主页,用户账户管理
+    path('ad_home/', views.ad_home, name='ad_home'),
+    #管理员信息页
+    path('ad_account_setting/', views.ad_account_setting, name='ad_account_setting'),
+    path('upload_administrator/', views.upload_administrator, name='upload_administrator'),
+    path('ad_account_setting1/', views.ad_account_setting1, name='ad_account_setting1'),
+    path('ad_account_setting1_password/', views.ad_account_setting1_password, name='ad_account_setting1_password'),
+    path('ad_logout/', views.ad_logout, name='ad_logout'),
+    path('ad_dispose_account/', views.ad_dispose_account, name='ad_dispose_account'),
+    path('ad_register/', views.ad_register, name='ad_register'),
+
+    #管理员管理文章页
+    path('ad_manage_article/', views.ad_manage_article, name='ad_manage_article'),
+
+    #管理员管理评论页
+    path('ad_manage_comment/', views.ad_manage_comment, name='ad_manage_comment'),
+    #管理员发表页
+    path('ad_send_article/', views.ad_send_article, name='ad_send_article'),
+    #管理员个人文章页
+    path('ad_self_article/', views.ad_self_article, name='ad_self_article'),
+    #管理员个人评论页
+    path('ad_self_comment/', views.ad_self_comment, name='ad_self_comment'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
