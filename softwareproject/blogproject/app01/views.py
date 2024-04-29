@@ -500,6 +500,8 @@ def upload_user(request):
 
             # 获取当前用户的ID作为文件名前缀
             user_id = request.session.get('user_id')
+            ext = '.jpg'
+
             unique_filename = f"{user_id}_portrait{ext}"
 
             with open(f'app01/static/app01/image/myimage/{unique_filename}', 'wb') as destination:
@@ -511,8 +513,15 @@ def upload_user(request):
             user.user_pfp = f'app01/static/app01/image/myimage/{unique_filename}'
             user.save()
 
-            # 重定向到个人信息页面
-            return render(request, 'app01/account_setting.html')
+            user = User.objects.get(user_id=request.session['user_id'])
+            user_register_date = user.user_register  # 假设这是用户注册的日期
+            current_date = timezone.now().date()  # 获取当前日期
+            days_diff = (current_date - user_register_date).days  # 计算注册到当前的天数
+
+            context = {
+                'days_diff': days_diff,
+            }
+            return render(request, 'app01/account_setting.html', context)
         except KeyError:
             # 如果没有选择文件，则返回错误消息
             error_message = "请选择要上传的文件"
@@ -521,6 +530,7 @@ def upload_user(request):
     else:
         # 如果不是 POST 请求，则重定向到个人信息页面
         return render(request, 'app01/account_setting.html')
+
 
 
 # 修改密码
@@ -614,5 +624,330 @@ def search_results(request):
     }
     # render函数：载入模板，并返回context对象
     return render(request, 'app01/search.html', context)
+
+
+
+# 管理员登录
+def ad_login(request):
+    if request.method == 'POST':
+        administrator_login_form = forms.ADLoginForm(request.POST)
+        if administrator_login_form.is_valid():
+            aid = administrator_login_form.cleaned_data.get('aid')
+            password = administrator_login_form.cleaned_data.get('pwd')
+
+            try:
+                administrator = models.Administrator.objects.get(administrator_id=aid)
+            except models.Administrator.DoesNotExist:
+                return JsonResponse({'success': False, 'error_type': 'Nouid', 'error': 'id不存在'})
+
+            if administrator.administrator_password == password:
+                # 记录登录态
+                # 将数据保存在 session 中，即实现了登录动作
+
+                request.session['is_login'] = True
+                request.session['administrator_id'] = administrator.administrator_id
+                request.session['administrator_mail'] = administrator.administrator_mail
+                request.session['administrator_phone'] = administrator.administrator_phone
+                request.session['administrator_name'] = administrator.administrator_name
+
+                return JsonResponse({'success': True})
+            else:
+                return JsonResponse({'success': False, 'error_type': 'wrongpwd', 'error': '密码错误'})
+        else:
+            return JsonResponse({'success': False, 'error_type': 'eempty', 'error': '存在未填项！'})
+    else:
+        return render(request, 'app01/ad_login.html')
+
+
+# 管理员主页面，管理用户账户
+def ad_home(request):
+    pass
+    return render(request, 'app01/ad_home.html')
+
+
+# 管理员账号信息显示页
+def ad_account_setting(request):
+    if request.method == 'POST':
+        field_name = request.POST.get('field_name')
+        new_value = request.POST.get('new_value')
+        # print("field_name:", field_name)
+        # print("new_value:", new_value)
+        # 在这里处理并保存更新后的数据到数据库中
+        # 例如：
+        administrator = models.Administrator.objects.get(administrator_id=request.session['administrator_id'])
+
+        if field_name == 'administrator_name':
+            administrator.administrator_name = new_value
+        elif field_name == 'administrator_introduction':
+            administrator.administrator_introduction = new_value
+        elif field_name == 'administrator_ip':
+            administrator.administrator_ip = new_value
+        elif field_name == 'administrator_sex':
+            if new_value == '男':
+                administrator.administrator_sex = 1
+            else:
+                administrator.administrator_sex = 0
+        elif field_name == 'administrator_birthday':
+            administrator.administrator_birthday = new_value
+            birthdate = datetime.strptime(new_value, '%Y-%m-%d')
+            today = datetime.today()
+            age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+            administrator.administrator_age = age
+
+        administrator.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Data saved successfully'})
+    elif request.method == 'GET':
+
+        # 获取最新的用户信息
+        administrator = models.Administrator.objects.get(administrator_id=request.session['administrator_id'])
+        administrator_register_date = administrator.administrator_register  # 假设这是用户注册的日期
+        current_date = timezone.now().date()  # 获取当前日期
+        days_diff = (current_date - administrator_register_date).days  # 计算注册到当前的天数
+
+        context = {
+            'days_diff': days_diff,
+            'administrator_name': administrator.administrator_name,
+            'administrator_id': administrator.administrator_id,
+            'administrator_introduction': administrator.administrator_introduction,
+            'administrator_sex': administrator.administrator_sex,
+
+            'administrator_birthday': administrator.administrator_birthday,
+            'administrator_age': administrator.administrator_age,
+            'administrator_ip': administrator.administrator_ip,
+            'administrator_register': administrator.administrator_register,
+            'administrator_pfp': administrator.administrator_pfp,
+
+        }
+        return render(request, 'app01/ad_account_setting.html', context)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
+# 管理员头像信息更新
+def upload_administrator(request):
+    if request.method == 'POST':
+        try:
+            avatar = request.FILES['avatar']
+            filename, ext = os.path.splitext(avatar.name)
+
+            # 获取当前用户的ID作为文件名前缀
+            administrator_id = request.session.get('administrator_id')
+            ext = '.jpg'
+
+            unique_filename = f"{administrator_id}_portrait{ext}"
+
+            with open(f'app01/static/app01/image/myimage/{unique_filename}', 'wb') as destination:
+                for chunk in avatar.chunks():
+                    destination.write(chunk)
+
+            # 更新数据库中用户的头像路径
+            administrator = models.Administrator.objects.get(administrator_id=administrator_id)
+            administrator.administrator_pfp = f'app01/static/app01/image/myimage/{unique_filename}'
+            administrator.save()
+
+            administrator = models.Administrator.objects.get(administrator_id=request.session['administrator_id'])
+            administrator_register_date = administrator.administrator_register  # 假设这是用户注册的日期
+            current_date = timezone.now().date()  # 获取当前日期
+            days_diff = (current_date - administrator_register_date).days  # 计算注册到当前的天数
+
+            context = {
+                'days_diff': days_diff,
+                'administrator_name': administrator.administrator_name,
+                'administrator_id': administrator.administrator_id,
+                'administrator_introduction': administrator.administrator_introduction,
+                'administrator_sex': administrator.administrator_sex,
+
+                'administrator_birthday': administrator.administrator_birthday,
+                'administrator_age': administrator.administrator_age,
+                'administrator_ip': administrator.administrator_ip,
+                'administrator_register': administrator.administrator_register,
+                'administrator_pfp': administrator.administrator_pfp,
+            }
+            return render(request, 'app01/ad_account_setting.html', context)
+        except KeyError:
+            # 如果没有选择文件，则返回错误消息
+            error_message = "请选择要上传的文件"
+            return render(request, 'app01/ad_account_setting.html', {'error_message': error_message})
+
+    else:
+        # 如果不是 POST 请求，则重定向到个人信息页面
+        return render(request, 'app01/ad_account_setting.html')
+
+
+# 管理员账号信息显示页
+def ad_account_setting1(request):
+    if request.method == 'POST':
+        field_name = request.POST.get('field_name')
+        new_value = request.POST.get('new_value')
+        # print("field_name:", field_name)
+        # print("new_value:", new_value)
+        # 在这里处理并保存更新后的数据到数据库中
+        # 例如：
+        administrator = models.Administrator.objects.get(administrator_id=request.session['administrator_id'])
+
+        if field_name == 'administrator_phone':
+            # 检查电话是否已经存在
+            if new_value != administrator.administrator_phone and models.Administrator.objects.filter(administrator_phone=new_value).exists():
+                return JsonResponse({'success': False, 'error_type': 'phone_exists', 'message': 'phone exist'})
+            administrator.administrator_phone = new_value
+        elif field_name == 'administrator_mail':
+            # 检查邮箱是否已经存在
+            if new_value != administrator.administrator_mail and models.Administrator.objects.filter(administrator_mail=new_value).exists():
+                return JsonResponse({'success': False, 'error_type': 'email_exists', 'message': 'mail exist'})
+            administrator.administrator_mail = new_value
+
+        administrator.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Data saved successfully'})
+    elif request.method == 'GET':
+        administrator = models.Administrator.objects.get(administrator_id=request.session['administrator_id'])
+        context = {
+            'administrator_mail': administrator.administrator_mail,
+            'administrator_phone': administrator.administrator_phone,
+
+        }
+        return render(request, 'app01/ad_account_setting1.html', context)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
+
+# 管理员修改密码
+def ad_account_setting1_password(request):
+    if request.method == 'POST':
+        change_pwd_form = forms.AdministratorChangePwdForm(request.POST)
+        if change_pwd_form.is_valid():
+            old_password = change_pwd_form.cleaned_data.get('oldPassword')
+            new_password = change_pwd_form.cleaned_data.get('newPassword')
+            check_password = change_pwd_form.cleaned_data.get('checkPassword')
+
+            print("get form successfully", new_password)
+
+            administrator = models.Administrator.objects.get(administrator_id=request.session['administrator_id'])
+
+            # 进行密码匹配验证
+            if new_password != check_password:
+                return JsonResponse({'success': False, 'error_type': 'pwdMismatch', 'error': '密码不匹配'})
+
+            if old_password == administrator.administrator_password:
+                administrator.administrator_password = new_password
+                administrator.save()
+                print("save success", new_password)
+                return JsonResponse({'success': True, 'message': '密码修改成功'})
+            else:
+                print("old pwd error")
+                return JsonResponse({'success': False, 'error_type': 'old_pwd_error', 'error': '原密码错误'})
+        else:
+            print("form error")
+            return JsonResponse({'success': False, 'error_type': 'invalidForm', 'error': '表单填写不完整或格式不正确'})
+    else:
+        return render(request, 'app01/ad_account_setting1_password.html')
+
+#管理员登出
+def ad_logout(request):
+    django_logout(request)
+    request.session.clear()
+    return JsonResponse({'success': True})
+
+#管理员注销
+def ad_dispose_account(request):
+    administrator = models.Administrator.objects.get(administrator_id=request.session['administrator_id'])
+    django_logout(request)
+    request.session.clear()
+    #注销管理员账户，功能有待调整
+    administrator.delete()
+    return JsonResponse({'success': True})
+
+
+
+
+# 管理员注册页
+def ad_register(request):
+    if request.method == 'POST':
+        registration_form = forms.AdministratorRegistrationForm(request.POST)
+        if registration_form.is_valid():
+            name = registration_form.cleaned_data.get('name')
+            email = registration_form.cleaned_data.get('email')
+            phone = registration_form.cleaned_data.get('phone')
+            password = registration_form.cleaned_data.get('password')
+            rpassword = registration_form.cleaned_data.get('rpassword')
+
+            # 进行密码匹配验证
+            if password != rpassword:
+                return JsonResponse({'success': False, 'error_type': 'pwd_mismatch', 'error': '密码不匹配'})
+
+            # 检查邮箱是否已经存在
+            if models.Administrator.objects.filter(administrator_mail=email).exists():
+                return JsonResponse({'success': False, 'error_type': 'email_exists', 'error': '该邮箱已被注册'})
+
+            # 检查电话是否已经存在
+            if models.Administrator.objects.filter(administrator_phone=phone).exists():
+                return JsonResponse({'success': False, 'error_type': 'phone_exists', 'error': '该电话已被注册'})
+
+            # 检查数据库中最大的用户ID
+            max_user_id = models.Administrator.objects.latest('administrator_id').administrator_id
+
+            max_user_id = int(max_user_id) if max_user_id else 0
+            print("max_user_id:", max_user_id)
+
+            if max_user_id < 9000000:
+                new_user_id = 9000001
+            else:
+                new_user_id = max_user_id + 1
+            while models.Administrator.objects.filter(administrator_id=new_user_id).exists():
+                new_user_id += 1
+            # 自动生成新用户的 id 号
+
+            administrator_register_date = datetime.now()  # 获取注册时间
+            try:
+                administrator = models.Administrator.objects.create(
+                    administrator_id=new_user_id,
+                    administrator_name=name,
+                    administrator_mail=email,
+                    administrator_phone=phone,
+                    administrator_register=administrator_register_date,
+
+                    administrator_password=password
+                )
+                # 可以在这里执行其他逻辑，例如发送欢迎邮件等
+                return JsonResponse({'success': True, 'message': '用户创建成功', 'new_user_id': new_user_id})
+            except Exception as e:
+                # 处理创建用户失败的情况
+                return JsonResponse(
+                    {'success': False, 'error_type': 'invalid', 'message': '用户创建失败', 'error': str(e)})
+            # 可以选择记录登录态（例如注册后直接登录）
+
+        else:
+            return JsonResponse({'success': False, 'error_type': 'invalid_form', 'error': '表单填写不完整或格式不正确'})
+    else:
+        return render(request, 'app01/ad_register.html')
+
+#管理员管理文章页
+def ad_manage_article(request):
+    pass
+    return render(request, 'app01/ad_manage_article.html')
+
+#管理员管理评论页
+def ad_manage_comment(request):
+    pass
+    return render(request, 'app01/ad_manage_comment.html')
+
+#管理员发表页
+def ad_send_article(request):
+    pass
+    return render(request, 'app01/ad_send_article.html')
+
+#管理员个人文章页
+def ad_self_article(request):
+    pass
+    return render(request, 'app01/ad_self_article.html')
+
+
+#管理员个人评论页
+def ad_self_comment(request):
+    pass
+    return render(request, 'app01/ad_self_comment.html')
+
 
 
