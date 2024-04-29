@@ -63,6 +63,8 @@ class User(AbstractBaseUser):  # 用户信息表
 
 
 class Administrator(models.Model):  # 管理员信息表
+    DoesNotExist = None
+    objects = models.Manager()
     # 管理员id，主键
     administrator_id = models.CharField(max_length=255, primary_key=True, db_index=True)
     # 管理员名，默认佚名
