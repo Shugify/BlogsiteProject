@@ -5,6 +5,8 @@
 <meta charset="utf-8"/>
 <link rel="apple-touch-icon" sizes="76x76" href="{% static 'app01/image/favicon.ico' %}"/>
 <link rel="icon" type="image/png" href="{% static 'app01/image/favicon.ico' %}">
+<!-- 引入 Swiper CSS -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 <title>BlogSphere博界</title>
 <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
@@ -14,6 +16,49 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 <!-- Main CSS -->
 <link href="{% static 'app01/css/main.css' %}" rel="stylesheet"/>
+    <style>
+        /* 在这里添加 CSS 样式 */
+        .article-image-container {
+            width: 160px; /* 定义图片容器的宽度 */
+            height: 120px; /* 定义图片容器的高度 */
+            overflow: hidden; /* 隐藏溢出部分 */
+            flex-shrink: 0; /* 防止图片容器收缩 */
+        }
+
+        .article-image {
+            width: 100%; /* 图片宽度填满容器 */
+            height: 100%; /* 图片高度填满容器 */
+            background-size: cover; /* 图片等比例缩放并填充满容器 */
+            background-position: center; /* 图片居中显示 */
+        }
+
+        .object-fit-cover {
+            object-fit: cover;
+        }
+        .aspect-ratio-4x3 {
+            aspect-ratio: 4/3;
+        }
+
+        .image-container {
+            position: relative;
+            width: 90%;
+            padding-bottom: 40%; /* 4:3 aspect ratio */
+            overflow: hidden;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+        .image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 确保图片填充容器并保持宽高比 */
+}
+
+    </style>
 </head>
 <body>
 <!--------------------------------------
@@ -78,160 +123,212 @@ NAVBARMundana is an HTML Bootstrap Template for Professional Blogging
 <!----------------
 MAIN
 ------------------>
-    
-<div class="container pt-4 pb-4 mt-1 ">
-    <div class="row justify-content-between mb-2">
-        {% for article in top_articles_random %}
-        <div class="col-lg-6">
-            <div class="card border-0 mb-4 box-shadow h-xl-100">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
-                        {% if article.article_image %}
-                            <img src="{{ article.article_image.url }}" class="card-img" alt="{{ article.article_title }}">
-                        {% endif %}
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body pb-0">
-                            <h2 class="h4 font-weight-bold">
-                                <a href="{% url 'article' article.article_id %}" class="text-dark">{{ article.article_title }}</a>
-                            </h2>
-							<!-- 标签 -->
-							<span>
-								{% for tag in article.tags.all %}
-									<a href="#" class="badge badge-secondary">
-										{{ tag }}
-									</a>
-								{% endfor %}
-							</span>
-                            <!-- 显示文章作者 -->
-                            <div class="card-text text-muted small">
-                                <p class="text-muted">作者: {{ article.article_author.user_name }}</p>
+<!-- 热门推荐 -->
+<div class="container">
+    <div class="row">
+        <!-- 轮播图栏目 -->
+        <div class="col-md-12 mb-4">
+            <div class="swiper-container" style="height: 600px;"> <!-- 调整轮播图高度 -->
+                <div class="swiper-wrapper">
+                    <!-- 循环生成轮播项 -->
+                    {% for article in top_articles_views %}
+                    <div class="swiper-slide">
+                        <!-- 文章内容 -->
+                        <div class="card border-0 box-shadow h-100">
+                            <!-- 文章图片 -->
+                            <div class="image-container aspect-ratio-3x4">  <!-- 添加 aspect-ratio-3x4 类 -->
+                                {% if article.article_image %}
+                                <img src="{{ article.article_image.url }}" class="w-100 h-100 object-fit-cover" alt="{{ article.article_title }}">
+                                {% endif %}
                             </div>
-							<!-- 注脚 -->
-							<p>
-								<!-- 附加信息，增加了图标 -->
-								<span>
-									<i class="fas fa-eye" style="color: lightskyblue;"></i>
-									{{ article.article_views }}&nbsp;&nbsp;&nbsp;
-								</span>
-								<span>
-									<i class="fas fa-comments" style="color: yellowgreen;"></i>
-									<!-- 修改为评论的计数 -->
-									{{ article.article_commentcnt }}&nbsp;&nbsp;&nbsp;
-								</span>
-								<span>
-									<i class="fas fa-clock" style="color: pink;"></i>
-									{{ article.article_created|date:"Y-m-d H:i:s" }}
-								</span>
-							</p>
+                            <div class="card-body">
+                                <!-- 文章标题 -->
+                                <h2 class="h4 font-weight-bold">
+                                    <a href="{% url 'article' article.article_id %}" class="text-dark">{{ article.article_title }}</a>
+                                </h2>
+                                <!-- 标签 -->
+                                <div>
+                                    {% for tag in article.tags.all %}
+                                    <a href="#" class="badge badge-secondary">{{ tag }}</a>
+                                    {% endfor %}
+                                </div>
+                                <!-- 文章作者 -->
+                                <div class="card-text text-muted small">
+                                    <p class="text-muted">作者: {{ article.article_author.user_name }}</p>
+                                </div>
+                                <!-- 注脚 -->
+                                <p>
+                                    <!-- 附加信息，增加了图标 -->
+                                    <span>
+                                        <i class="fas fa-eye" style="color: lightskyblue;"></i>
+                                        {{ article.article_views }}
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-comments" style="color: yellowgreen;"></i>
+                                        <!-- 修改为评论的计数 -->
+                                        {{ article.article_commentcnt }}
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-clock" style="color: pink;"></i>
+                                        {{ article.article_created|date:"Y-m-d H:i:s" }}
+                                    </span>
+                                </p>
+                            </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
+                <!-- 轮播图导航按钮 -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div>
         </div>
-        {% endfor %}
     </div>
 </div>
 
-<!-- 最新发布 -->
-<div class="container ">
-	<div class="row justify-content-between">
-		<div class="col-md-8">
-			<h5 class="font-weight-bold spanborder"><span>最新发布</span></h5>
-			{% for article in top_articles_time %}
-            <div class="mb-3 d-flex justify-content-between">
-                <div class="pr-3">
+<!-- 引入 Swiper CSS -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+
+<!-- 引入 Swiper JavaScript -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<script>
+    // 等待页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+        // 初始化 Swiper
+        var swiper = new Swiper('.swiper-container', {
+            // 轮播图配置选项
+            loop: true,
+            slidesPerView: 1,
+            centeredSlides: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+    });
+</script>
+
+<div class="container">
+    <div class="row">
+        <!-- 按钮 -->
+        <div class="col-md-12 mb-4">
+            <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation" onclick="showRandomArticles()">推荐</button>
+            <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation" onclick="showLatestArticles()">最新</button>
+        </div>
+        <!-- 随机推荐栏 -->
+        <div class="col-md-12 mb-4" id="random_articles" style="height: 800px; overflow-y: auto;">
+            <h5 class="font-weight-bold spanborder"></h5>
+            <!-- 这里是猜你想看栏的内容 -->
+            {% for article in top_articles_random %}
+            <div class="mb-3 d-flex align-items-start">
+                <div class="article-image-container mr-3">
+                    {% if article.article_image %}
+                    <div class="article-image" style="background-image: url('{{ article.article_image.url }}'); height: 120px;"></div>
+                    {% endif %}
+                </div>
+                <div>
                     <h2 class="mb-1 h4 font-weight-bold">
-                        <a href="{% url 'article' article.article_id %}" class="text-dark">{{ article.article_title }}</a>
+                        <a href="#" class="text-dark">{{ article.article_title }}</a>
                     </h2>
-					<!-- 标签 -->
-					<span>
-						{% for tag in article.tags.all %}
-						<a href="#" class="badge badge-secondary">
-							{{ tag }}
-						</a>
-						{% endfor %}
-					</span>
-                    <!-- 显示文章作者 -->
+                    <span>
+                        {% for tag in article.tags.all %}
+                        <a href="#" class="badge badge-secondary">
+                            {{ tag }}
+                        </a>
+                        {% endfor %}
+                    </span>
                     <div class="card-text text-muted small">
                         <p class="text-muted">作者: {{ article.article_author.user_name }}</p>
                     </div>
-                    <!-- 注脚 -->
-					<p>
-						<!-- 附加信息，增加了图标 -->
-						<span>
-							<i class="fas fa-eye" style="color: lightskyblue;"></i>
-							{{ article.article_views }}&nbsp;&nbsp;&nbsp;
-						</span>
-						<span>
-							<i class="fas fa-comments" style="color: yellowgreen;"></i>
-							<!-- 修改为评论的计数 -->
-							{{ article.article_commentcnt }}&nbsp;&nbsp;&nbsp;
-						</span>
-						<span>
-							<i class="fas fa-clock" style="color: pink;"></i>
-							{{ article.article_created|date:"Y-m-d H:i:s" }}
-						</span>
-					</p>
+                    <!-- 内容摘要 -->
+                    <span class="text-clip">
+                        {{ article.article_content|slice:'100' }}...
+                    </span>
+                    <!-- 内容摘要 -->
+                    <p>
+                        <span>
+                            <i class="fas fa-eye" style="color: lightskyblue;"></i>
+                            {{ article.article_views }}&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span>
+                            <i class="fas fa-comments" style="color: yellowgreen;"></i>
+                            {{ article.article_commentcnt }}&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span>
+                            <i class="fas fa-clock" style="color: pink;"></i>
+                            {{ article.article_created|date:"Y-m-d H:i:s" }}
+                        </span>
+                    </p>
                 </div>
-                <!-- 显示文章图片 -->
-				{% if article.article_image %}
-					<img height="120" src="{{ article.article_image.url }}" alt="{{ article.article_title }}">
-				{% endif %}
             </div>
             {% endfor %}
-		</div>
-<!-- 热门推荐 -->
-		<div class="col-md-4 pl-4">
-			<h5 class="font-weight-bold spanborder"><span>热门推荐</span></h5>
-			<ol class="list-featured">
-				{% for article in top_articles_views %}
-				<li class="d-flex align-items-start"> <!-- 使用 Flexbox 布局 -->
-					<div class="article-info flex-grow-1"> <!-- 文章信息容器 -->
-						<h6 class="font-weight-bold">
-							<a href="{% url 'article' article.article_id %}" class="text-dark">{{ article.article_title }}</a>
-						</h6>
-						<!-- 标签 -->
-						<span>
-							{% for tag in article.tags.all %}
-							<a href="#" class="badge badge-secondary">
-								{{ tag }}
-							</a>
-							{% endfor %}
-						</span>
-						<!-- 显示文章作者 -->
-						<p class="text-muted">作者: {{ article.article_author.user_name }}</p>
-						 <!-- 注脚 -->
-					<p>
-						<!-- 附加信息，增加了图标 -->
-						<span>
-							<i class="fas fa-eye" style="color: lightskyblue;"></i>
-							{{ article.article_views }}&nbsp;&nbsp;&nbsp;
-						</span>
-						<span>
-							<i class="fas fa-comments" style="color: yellowgreen;"></i>
-							<!-- 修改为评论的计数 -->
-							{{ article.article_commentcnt }}&nbsp;&nbsp;&nbsp;
-						</span>
-						<span>
-							<i class="fas fa-clock" style="color: pink;"></i>
-							{{ article.article_created|date:"Y-m-d H:i:s" }}
-						</span>
-					</p>
-					</div>
-					<div class="article-image"> <!-- 图片容器 -->
-						{% if article.article_image %}
-						<img height="80" src="{{ article.article_image.url }}" alt="{{ article.article_title }}">
-						{% endif %}
-					</div>
-				</li>
-				{% endfor %}
-			</ol>
-		</div>
-
-
-	</div>
+        </div>
+        <!-- 最新发布栏 -->
+        <div class="col-md-12 mb-4" id="latest_articles" style="height: 800px; overflow-y: auto; display: none;">
+            <h5 class="font-weight-bold spanborder"></h5>
+            <!-- 这里是最新发布栏的内容 -->
+            {% for article in top_articles_time %}
+            <div class="mb-3 d-flex align-items-start">
+                <div class="article-image-container mr-3">
+                    {% if article.article_image %}
+                    <div class="article-image" style="background-image: url('{{ article.article_image.url }}'); height: 120px;"></div>
+                    {% endif %}
+                </div>
+                <div class="article-info flex-grow-1 mr-3">
+                    <h2 class="mb-1 h4 font-weight-bold">
+                        <a href="#" class="text-dark">{{ article.article_title }}</a>
+                    </h2>
+                    <span>
+                        {% for tag in article.tags.all %}
+                        <a href="#" class="badge badge-secondary">
+                            {{ tag }}
+                        </a>
+                        {% endfor %}
+                    </span>
+                    <p class="text-muted">作者: {{ article.article_author.user_name }}</p>
+                    <!-- 内容摘要 -->
+                    <span class="text-clip">
+                        {{ article.article_content|slice:'100' }}...
+                    </span>
+                    <!-- 内容摘要 -->
+                    <p>
+                        <span>
+                            <i class="fas fa-eye" style="color: lightskyblue;"></i>
+                            {{ article.article_views }}&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span>
+                            <i class="fas fa-comments" style="color: yellowgreen;"></i>
+                            {{ article.article_commentcnt }}&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span>
+                            <i class="fas fa-clock" style="color: pink;"></i>
+                            {{ article.article_created|date:"Y-m-d H:i:s" }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
+
+<script>
+function showRandomArticles() {
+    document.getElementById("random_articles").style.display = "block";
+    document.getElementById("latest_articles").style.display = "none";
+}
+
+function showLatestArticles() {
+    document.getElementById("random_articles").style.display = "none";
+    document.getElementById("latest_articles").style.display = "block";
+}
+
+// 默认显示推荐页面
+showRandomArticles();
+</script>
+
+
     
 <!--------------------------------------
 FOOTER
