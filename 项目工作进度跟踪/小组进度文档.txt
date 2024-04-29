@@ -47,3 +47,11 @@
 参考第4章，4.12 皮卡迪里电视广告售卖系统，分析、归纳、总结出符合实际的需求规格。
 3. 分工协作，用上面的工作补充完善SRS和所负责的项目。
 4.更新了反映项目及小组每个人工作的进度的甘特图。
+
+第九周（4.29-5.5）
+1.阅读“The Unified Modeling Language Reference Manual”，进一步学习UML知识，理解如何应用UML对系统进行建模，并整理汇总成文档。
+2.阅读“LOGIC IN COMPUTER SCIENCE--Modelling and Reasoning about Systems”，了解常用逻辑及其在计算机学科中的应用，并整理汇总成文档。
+3.分工协作，将国标“13 - 软件(结构)设计说明(SDD)”等资料和SAD最新标准IEEE-42010.pdf进行对比分析，并整理汇总成文档。
+4.分工协作，学习、检索研究经典软件体系结构案例：On-the-Criteria-To-Be-Used-in-Decomposing-Systems-into-Modules.pdf；http://www.cs.cmu.edu/~ModProb/index.html，并整理汇总成文档。
+5.完成软件需求规格说明SRS。
+6.参考国标“13 - 软件(结构)设计说明(SDD)”等资料和SAD最新标准IEEE-42010.pdf，针对自己的项目设计SAD初稿，并完成SAD写作的小组分工。
