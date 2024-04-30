@@ -28,7 +28,7 @@ from django.utils import timezone
 # 引入 Q 对象
 from django.db.models import Q
 from django.shortcuts import render
-
+from django.db.models import Max
 
 # 首页
 def index(request):
@@ -149,10 +149,16 @@ def register(request):
             if models.User.objects.filter(user_phone=phone).exists():
                 return JsonResponse({'success': False, 'error_type': 'phone_exists', 'error': '该电话已被注册'})
 
-            # 检查数据库中最大的用户ID
-            max_user_id = models.User.objects.latest('user_id').user_id
-
-            max_user_id = int(max_user_id) if max_user_id else 0
+           # 检查数据库中最大的用户ID
+            try:
+                # 使用aggregate来避免QuerySet为空时引发异常
+                max_user_id = models.User.objects.aggregate(max_id=Max('user_id'))['max_id']
+                if max_user_id is None:  # 如果max_id为None，则数据库中没有用户
+                    max_user_id = 0
+                else:
+                    max_user_id = int(max_user_id)
+            except models.User.DoesNotExist:  # Django ORM本身不会抛出DoesNotExist异常，但确保安全
+                max_user_id = 0
             print("max_user_id:", max_user_id)
 
             if max_user_id < 1000000:
