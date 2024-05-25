@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	{% load static %}
+<meta charset="utf-8"/>
+<link rel="apple-touch-icon" sizes="76x76" href="{% static 'app01/image/favicon.ico' %}">
+<link rel="icon" type="image/png" href="{% static 'app01/image/favicon.ico' %}">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<title>{{ article.article_title }}</title>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Source+Sans+Pro:400,700" rel="stylesheet">
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+<!-- Main CSS -->
+<link href="{% static 'app01/css/main.css' %}" rel="stylesheet"/>
+<link href="{% static 'app01/css/article.css' %}" rel="stylesheet"/>
+
+<style>
+    .highlighted-comment {
+        background-color: #f0f8ff; /* 淡蓝色背景 */
+        padding: 10px; /* 添加内边距 */
+        margin: 10px 0; /* 添加外边距 */
+        transition: background-color 0.3s ease; /* 添加过渡效果 */
+    }
+    .highlighted-comment:hover {
+        background-color: #ebf5fb; /* 悬停时的背景色 */
+    }
+</style>
+</head>
+
+<body>
+<!--------------------------------------NAVBAR--------------------------------------->
+<nav class="topnotch navbar navbar-expand-lg navbar-light bg-white fixed-top">
+<div class="container">
+
+	<div class="navbar-collapse collapse" id="navbarColor02" style="">
+
+		<ul class="navbar-nav mr-auto d-flex align-items-center">
+			<li class="nav-item ">
+			<a class="nav-link" href="http://127.0.0.1:8000/ad_home/">账户管理</a>
+			</li>
+			<li class="nav-item pl-3">
+			<a class="nav-link" href="http://127.0.0.1:8000/ad_manage_article/">文章管理</a>
+			</li>
+
+			<li class="nav-item pl-3">
+			<a class="nav-link" href="http://127.0.0.1:8000/ad_manage_comment/">评论管理</a>
+			</li>
+
+			<li class="nav-item pl-3">
+			<a class="nav-link" href="http://127.0.0.1:8000/ad_self_article/">我的blog</a>
+			</li>
+		</ul>
+
+		<ul class="navbar-nav ml-auto d-flex align-items-center">
+			<li class="nav-item highlight">
+				<a class="nav-link" href="http://127.0.0.1:8000/ad_send_article/">发布博客</a>
+			</li>
+		</ul>
+
+		<ul class="navbar-nav ml-auto d-flex align-items-center">
+			<li class="nav-item highlight">
+			<a class="nav-link" href="http://127.0.0.1:8000/ad_account_setting/">个人中心</a>
+			</li>
+		</ul>
+	</div>
+</div>
+</nav>
+<!-- End Navbar -->
+
+<!--------------------------------------MAIN--------------------------------------->
+<div class="main_father mr-lg-3 ml-lg-3">
+    <!----------------------------------ASIDE--------------------------------------->
+    <aside class="blog_aside">
+        <div class="aside-box">
+            <div class="d-flex align-center ml-3 bg-white">
+                 <div class="user-avatar-container mr-2">
+                   {% if flag %}
+                    <img alt="管理员头像" class="rounded-circle" height="80"
+                         src="{{ author.administrator_pfp.url }}?timestamp={{ timestamp }}">
+                   {% else %}
+                    <img alt="用户头像" class="rounded-circle" height="80"
+                         src="{{ author.user_pfp.url }}?timestamp={{ timestamp }}">
+                   {% endif %}
+                </div>
+                <div class="col">
+                    <div style="font-size: 20px;font-weight: bold;margin:15px 0 10px 10px;">
+                        {% if flag %}
+                            <a href="{% url 'ad_user_detail_lastest' author.administrator_id flag %}">{{author_name}}<p class="fas fa-star" style="color: #8B0000" ></a>
+                        {% else %}
+                             <a href="{% url 'ad_user_detail_lastest' author.user_id flag %}">{{author_name}}</a>
+                        {% endif %}
+                    </div>
+                    <div style="font-size: 15px;">
+                        已入驻博界&nbsp;{{days_diff}}&nbsp;天
+                    </div>
+                </div>
+            </div>
+            <div class="aside-row h-100">
+                <span class="aside-block ml-3 align-center">
+                    博客数
+                </span>
+                <hr class="vertical-line aside-block align-center" />
+                <span class="aside-block ml-3 align-center">
+                    {{ author_article_count }}篇
+                </span>
+            </div>
+        </div>
+        <div class="aside-box mt-2 bg-white">
+            {% if article.article_image %}
+                <img src="{{ article.article_image.url }}" alt="封面图走丢了~">
+            {% endif %}
+        </div>
+
+        <!-- 显示热门文章列表 -->
+        {% if top_articles_views %}
+            <div class="aside-box mt-2 pt-3 pb-3 pl-3 pr-3">
+                <h4 class="font-weight-bold spanborder align-center"><span>热门推荐</span></h4>
+                 <ul>
+                    {% for article in top_articles_views %}
+                        <li><a href="{% url 'article' article.article_id %}">{{ article.article_title }}</a></li>
+                    {% endfor %}
+                 </ul>
+            </div>
+        {% else %}
+            <p>暂无热门推荐</p>
+        {% endif %}
+
+        <div class="text-center">
+            <div class="text-muted mt-4">
+                Share this
+            </div>
+            <div class="d-inline-block">
+                <!-- AddToAny BEGIN -->
+                <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+                    <a class="a2a_button_facebook"></a>
+                    <a class="a2a_button_twitter"></a>
+                    <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+                </div>
+                <script async src="https://static.addtoany.com/menu/page.js"></script>
+                <!-- AddToAny END -->
+            </div>
+        </div>
+    </aside>
+    <!-- End ASIDE -->
+
+    <!----------------------------------SECTION--------------------------------------->
+    <section class="blog_content pt-3">
+         <!-------------------------------HEADER--------------------------------->
+        <div class="ml-4 mr-3 mt-3">
+            <h1 class="display-4 secondment mb-3 font-weight-bold text-center">{{ article.article_title}}</h1>
+            <span class="text-muted d-block align-center" style="text-align: center;">
+                <span class="pr-5">作  者：{{ author_name }} </span>
+                <span>发布时间：{{ article.article_created |date:"Y年m月d日 H时i分" }} </span>
+                <br>
+                <span class="pr-5">阅读人数：{{ article.article_views }}   </span>
+                <span >上次更新：{{ article.article_updated |date:"Y年m月d日 H时i分" }} </span>
+            </span>
+        </div>
+        <!-- End Header -->
+        <div class="pt-4 pb-4 ml-1">
+            <div class="row justify-content-center">
+                <div class="container ml-5 mr-5">
+                        <div class="col-12">
+                            <!-- 文章内容 -->
+                            <p style="white-space: pre-wrap;">
+                                {{ article.article_content }}
+                            </p>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End SECTION -->
+
+
+</div>
+
+
+<!-- 发表评论 -->
+
+<div class="comment">
+    <hr>
+    <div>
+        <form
+            action="{% url 'post_comment'  article.article_id%}"
+            method="POST"
+        >
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="comment_id">
+                    <strong>
+                        我也要发言：
+                    </strong>
+                </label>
+                <textarea
+                        class="form-control"
+                        id="comment_id"
+                        name="comment_content"
+                        rows="2"></textarea>
+            </div>
+            <br>
+
+            <button type="submit" class="btn btn-primary ">发送</button>
+        </form>
+    </div>
+
+    <br>
+
+<!-- 显示评论 -->
+<h4>共有{{ comments.count }}条评论</h4>
+<div>
+    {% for comment in comments %}
+        <hr>
+        <div id="comment_{{ comment.comment_id }}"> <!-- 添加唯一的 ID 属性 -->
+            <p>
+                <strong style="color: pink">
+                {% if comment.comment_user %}
+                    <a class="h6 font-weight-bold" href="{% url 'ad_user_detail_lastest' comment.comment_user.user_id 0 %}">{{comment.comment_user.user_name}}</a>
+                {% else %}
+                    <a class="h6 font-weight-bold" href="{% url 'ad_user_detail_lastest' comment.comment_ad.administrator_id 1 %}">{{comment.comment_ad.administrator_name}}<i class="fas fa-star" style="color: #8B0000"></i></a>
+                {% endif %}
+                </strong> 于
+                <span style="color: green">
+                {{ comment.comment_created|date:"Y-m-d H:i:s"}}
+                </span> 时说：
+            </p>
+            <pre style="font-family: inherit; font-size: 1em;">
+            {{ comment.comment_content }}</pre>
+        </div>
+    {% endfor %}
+</div>
+
+</div>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取 URL 中的评论 ID
+            var comment_id = "{{ comment_id }}";
+
+            // 如果 URL 中有评论 ID，则滚动到评论位置
+            var commentElement = document.getElementById('comment_' + comment_id);
+            if (commentElement)
+            {
+                commentElement.scrollIntoView();
+                // 添加突出显示的样式
+                commentElement.classList.add('highlighted-comment');
+            }
+        });
+</script>
+
+<!-- End Main -->
+
+<!--------------------------------------FOOTER--------------------------------------->
+<div class="mt-1 ml-5 mr-5">
+	<footer class=" border-top p-3 text-muted small">
+	<div class="row align-items-center justify-content-between">
+		<div>
+            <span class="navbar-brand mr-2"><strong>五元一次方程组</strong></span> 倾情制作
+			<script>document.write(new Date().getFullYear())</script>
+			 . Open most copyright.
+		</div>
+		<div>
+			点击 <a target="_blank" class="text-secondary font-weight-bold" href="https://github.com/Shugify/BlogsiteProject/">这里</a> 查看项目源码.
+		</div>
+	</div>
+	</footer>
+</div>
+<!-- End Footer -->
+
+<!--------------------------------------JAVASCRIPT--------------------------------------->
+<script src="{% static 'app01/js/vendor/jquery.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'app01/js/vendor/popper.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'app01/js/vendor/bootstrap.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'app01/js/functions.js' %}" type="text/javascript"></script>
+</body>
+</html>
