@@ -713,8 +713,16 @@ def dispose_account(request):
 
 
 def category(request):
-    pass
-    return render(request, 'app01/category.html')
+    categories = Category.objects.all()
+    selected_category_id = request.GET.get('category_id')
+
+    # 如果选择了分类，则获取该分类的所有相关文章
+    posts = Article.objects.all()
+    if selected_category_id:
+        categories_relationships = ArticleCategory.objects.filter(category_id=selected_category_id)
+        posts = [rel.article for rel in categories_relationships]
+
+    return render(request, 'app01/category.html', {'categories': categories, 'posts': posts})
 
 
 def search_results(request):
