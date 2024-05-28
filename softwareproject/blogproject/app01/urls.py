@@ -101,6 +101,12 @@ urlpatterns = [
     path('ad_user_detail_lastest/<str:id>/<int:flag>/', views.ad_user_detail_lastest, name='ad_user_detail_lastest'),
     # 用户个人主页按浏览量展示（管理员用户看）
     path('ad_user_detail_top/<str:id>/<int:flag>/', views.ad_user_detail_top, name='ad_user_detail_top'),
+
+#管理员分类管理
+    path('ad_add_category/', views.ad_add_category, name='ad_add_category'),
+    path('delete_category/', views.delete_category, name='delete_category'),
+
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

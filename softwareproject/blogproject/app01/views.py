@@ -239,12 +239,6 @@ def email_login(request):
         return render(request, 'app01/email_login.html')
 
 
-# 管理员登录
-def ad_login(request):
-    pass
-    return render(request, 'app01/ad_login.html')
-
-
 # 个人博客页面文章列举
 def my_article(request):
     # 获取特定用户
@@ -1028,9 +1022,15 @@ def ad_register(request):
                 return JsonResponse({'success': False, 'error_type': 'phone_exists', 'error': '该电话已被注册'})
 
             # 检查数据库中最大的用户ID
-            max_user_id = models.Administrator.objects.latest('administrator_id').administrator_id
-
-            max_user_id = int(max_user_id) if max_user_id else 0
+            try:
+                # 使用aggregate来避免QuerySet为空时引发异常
+                max_user_id = models.Administrator.objects.aggregate(max_id=Max('administrator_id'))['max_id']
+                if max_user_id is None:  # 如果max_id为None，则数据库中没有用户
+                    max_user_id = 0
+                else:
+                    max_user_id = int(max_user_id)
+            except models.Administrator.DoesNotExist:  # Django ORM本身不会抛出DoesNotExist异常，但确保安全
+                max_user_id = 0
             print("max_user_id:", max_user_id)
 
             if max_user_id < 9000000:
@@ -1039,6 +1039,8 @@ def ad_register(request):
                 new_user_id = max_user_id + 1
             while models.Administrator.objects.filter(administrator_id=new_user_id).exists():
                 new_user_id += 1
+
+
             # 自动生成新用户的 id 号
 
             administrator_register_date = datetime.now()  # 获取注册时间
@@ -1093,6 +1095,86 @@ def ad_delete_user_article(request, id):
 def ad_manage_comment(request):
     pass
     return render(request, 'app01/ad_manage_comment.html')
+
+
+# 管理员分类管理
+def ad_add_category(request):
+    if request.method == 'POST':
+        category_form = forms.CategoryForm(request.POST)
+        if category_form.is_valid():
+            category_name = category_form.cleaned_data.get('category_name')
+
+            if models.Category.objects.filter(category_name=category_name).exists():
+                return JsonResponse({'success': False, 'error_type': 'category_exists', 'error': '该类别已添加'})
+
+                # 检查数据库中最大的用户ID
+            try:
+                # 使用aggregate来避免QuerySet为空时引发异常
+                max_id = models.Category.objects.aggregate(max_id=Max('category_id'))['max_id']
+                if max_id is None:  # 如果max_id为None，则数据库中没有用户
+                    max_id = 0
+                else:
+                    max_id = int(max_id)
+            except models.Category.DoesNotExist:  # Django ORM本身不会抛出DoesNotExist异常，但确保安全
+                ma_user_id = 0
+            print("max_user_id:", max_id)
+
+            if max_id < 10000:
+                new_id = 10001
+            else:
+                new_id = max_id + 1
+            while models.Category.objects.filter(category_id=new_id).exists():
+                new_id += 1
+                # 自动生成新用户的 id 号
+
+            category_created = datetime.now()  # 获取注册时间
+            try:
+                category = models.Category.objects.create(
+                    category_id=new_id,
+                    category_name=category_name,
+                    category_created=category_created
+                )
+                # 可以在这里执行其他逻辑，例如发送欢迎邮件等
+                return JsonResponse({'success': True, 'message': '用户创建成功'})
+
+            except Exception as e:
+                return JsonResponse(
+                    {'status': 'error', 'error_type': 'invalid', 'message': 'Invalid request method'},
+                    status=400)
+        else:
+            return JsonResponse({'status': 'error', 'error_type': 'invalid', 'message': 'Invalid request method'},
+                                status=400)
+
+    elif request.method == 'GET':
+        categories = models.Category.objects.all()
+        return render(request, 'app01/ad_add_category.html', {'categories': categories})
+    else:
+        return JsonResponse({'status': 'error', 'error_type': 'invalid', 'message': 'Invalid request method'},
+                            status=400)
+
+
+#管理员删除分类
+def delete_category(request):
+    if request.method == 'POST':
+        delete_category_form = forms.DeleteCategoryForm(request.POST)
+        if delete_category_form.is_valid():
+            cid=delete_category_form.cleaned_data.get('cid')
+            if models.Category.objects.filter(category_id=cid).exists():
+                # 删除 ArticleCategory 表中的项
+                models.ArticleCategory.objects.filter(category_id=cid).delete()
+                models.Category.objects.filter(category_id=cid).delete()
+
+                return JsonResponse({'success': True, 'message': '类别删除成功'})
+            else:
+                return JsonResponse({'status': 'error', 'error_type': 'invalid', 'message': 'Invalid category_id'},status=400)
+
+        else:
+            return JsonResponse({'status': 'error', 'error_type': 'invalid', 'message': 'Invalid form'},
+                                status=400)
+
+    else:
+        return JsonResponse({'status': 'error', 'error_type': 'invalid', 'message': 'Invalid request method'},
+                            status=400)
 
 
 # 管理员发表文章页

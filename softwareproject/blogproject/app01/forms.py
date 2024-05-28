@@ -98,3 +98,14 @@ class AdministratorRegistrationForm(forms.Form):
             raise forms.ValidationError("密码不匹配，请重新输入。")
 
         return cleaned_data
+
+
+
+
+# 添加分类
+class CategoryForm(forms.Form):
+    category_name = forms.CharField(label='category', max_length=100, required=True)
+
+
+class DeleteCategoryForm(forms.Form):
+    cid = forms.CharField(label='cid', max_length=100, required=True)
