@@ -14,6 +14,15 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 <!-- Main CSS -->
 <link href="{% static 'app01/css/main.css' %}" rel="stylesheet"/>
+	<style>
+		.nav-item.active .nav-link {
+            color: black !important; /* 修改文本颜色 */
+            font-weight: bold;
+            /* background-color: #3D91C9;*/
+        }
+	</style>
+
+
 </head>
 <body>
 <!--------------------------------------
@@ -32,20 +41,25 @@ NAVBARMundana is an HTML Bootstrap Template for Professional Blogging
 
 		<ul class="navbar-nav mr-auto d-flex align-items-center">
 
-			<li class="nav-item ">
-			<a class="nav-link" href="http://127.0.0.1:8000/ad_home/">账户管理</a>
-			</li>
-			<li class="nav-item pl-3">
-			<a class="nav-link" href="http://127.0.0.1:8000/ad_manage_article/">文章管理</a>
-			</li>
+			 <li class="nav-item  active">
+                    <a class="nav-link active" href="http://127.0.0.1:8000/ad_home/">账户管理</a>
+                </li>
+                <li class="nav-item pl-3">
+                    <a class="nav-link" href="http://127.0.0.1:8000/ad_manage_article/">文章管理</a>
+                </li>
 
-			<li class="nav-item pl-3">
-			<a class="nav-link" href="http://127.0.0.1:8000/ad_manage_comment/">评论管理</a>
-			</li>
+                <li class="nav-item pl-3">
+                    <a class="nav-link " href="http://127.0.0.1:8000/ad_manage_comment/">评论管理</a>
+                </li>
 
-			<li class="nav-item pl-3">
-			<a class="nav-link" href="http://127.0.0.1:8000/ad_self_article/">我的blog</a>
-			</li>
+                <li class="nav-item pl-3">
+                    <a class="nav-link" href="http://127.0.0.1:8000/ad_self_article/">我的blog</a>
+                </li>
+
+                <li class="nav-item pl-3">
+                    <a class="nav-link " href="http://127.0.0.1:8000/ad_add_category/">分类管理</a>
+                </li>
+
 
 
 

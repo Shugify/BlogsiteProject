@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="utf-8"/>
+    <link href="{% static 'app01/image/favicon.ico' %}" rel="apple-touch-icon" sizes="76x76"/>
+    <link href="{% static 'app01/image/favicon.ico' %}" rel="icon" type="image/png">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+    <title>BlogSphere博界</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
+          name='viewport'/>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Source+Sans+Pro:400,600,700"
+          rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" rel="stylesheet">
+    <!-- Main CSS -->
+    <link href="{% static 'app01/css/main.css' %}" rel="stylesheet"/>
+
+    <style>
+        .nav-item.active .nav-link {
+            color: black !important; /* 修改文本颜色 */
+            font-weight: bold;
+            /* background-color: #3D91C9;*/
+        }
+
+
+
+  .modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: none; /* 使用 flexbox 布局 */
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%; /* 调整宽度 */
+  max-width: 400px; /* 设置最大宽度 */
+  height: auto; /* 自适应高度 */
+  max-height: 80%; /* 设置最大高度 */
+  text-align: center;
+}
+
+
+    </style>
+
+
+</head>
+<body>
+<!--------------------------------------
+NAVBARMundana is an HTML Bootstrap Template for Professional Blogging
+--------------------------------------->
+<link
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css"
+        rel="stylesheet"
+>
+
+<nav class="topnav navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <div class="container">
+
+
+        <div class="navbar-collapse collapse" id="navbarColor02" style="">
+
+            <ul class="navbar-nav mr-auto d-flex align-items-center">
+
+                <li class="nav-item ">
+                    <a class="nav-link" href="http://127.0.0.1:8000/ad_home/">账户管理</a>
+                </li>
+                <li class="nav-item pl-3">
+                    <a class="nav-link" href="http://127.0.0.1:8000/ad_manage_article/">文章管理</a>
+                </li>
+
+                <li class="nav-item pl-3">
+                    <a class="nav-link " href="http://127.0.0.1:8000/ad_manage_comment/">评论管理</a>
+                </li>
+
+                <li class="nav-item pl-3">
+                    <a class="nav-link" href="http://127.0.0.1:8000/ad_self_article/">我的blog</a>
+                </li>
+
+                <li class="nav-item active pl-3">
+                    <a class="nav-link active" href="http://127.0.0.1:8000/ad_add_category/">分类管理</a>
+                </li>
+
+
+            </ul>
+
+
+            <ul class="navbar-nav ml-auto d-flex align-items-center">
+                <li class="nav-item highlight">
+                    <a class="nav-link" href="http://127.0.0.1:8000/ad_send_article/">发布博客</a>
+                </li>
+            </ul>
+
+
+            <ul class="navbar-nav ml-auto d-flex align-items-center">
+                <li class="nav-item highlight">
+                    <a class="nav-link" href="http://127.0.0.1:8000/ad_account_setting/">个人中心</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- End Navbar -->
+
+<!----------------
+MAIN
+------------------>
+
+
+<div id="successModal" class="modal" >
+  <div class="modal-content">
+
+    <p id="countdown"></p>
+  </div>
+</div>
+
+
+<div class="container pt-4 pb-4 mt-1 ">
+    <div class="col-md-12" style="display: flex; justify-content: center;">
+
+        <div class="col-md-10">
+            <h4 class="pb-2 font-weight-bold ">已有分类</h4>
+ <h2 class="font-weight-bold spanborder"></h2>
+
+           <div class="col-md-12 " style="display: flex; flex-wrap: wrap;">
+    {% for category in categories %}
+    <div class="pt-3" style="width: calc(40% - 25px); margin-right: 100px; position: relative;">
+        <h5>{{ category.category_name }}</h5>
+
+        <p>Created: {{ category.category_created }}</p>
+        <button class="ml-auto btn btn-outline-danger btn-sm my-2 my-sm-2" onclick="confirmDelete('{{ category.category_id }}','{{ category.category_name }}')" style="position: absolute; top: 5px; right: 5px;">×</button>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+        </div>
+
+    </div>
+
+    <h2 class="pb-4 font-weight-bold spanborder"></h2>
+
+    <div class="col-md-12" style="display: flex; justify-content: center;">
+
+        <div class="col-md-10">
+            <h4 class="pb-4 font-weight-bold ">分类添加</h4>
+
+
+            <div class="col-md-10">
+
+                <form action="{% url 'ad_add_category' %}" id="CategoryForm" method="post">
+    {% csrf_token %}
+                    <div class="col-md-12 pt-1  align-self-center">
+                        <div class="row">
+                        <label class="pr-3 pt-3" for="inputCGname">类别名:</label>
+
+
+                            <div class="col-md-8 pt-1  align-self-center">
+                                <input class="form-control" id="inputCGname" name="name"
+                                       placeholder="Categorry name" required type="text">
+                            </div>
+                            <div class="col-md-3 pt-1  align-self-center"><span id="vCG"></span></div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="row pt-4 pb-5">
+
+                        <button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2"
+                                id="submitBtn" onclick="submitForm()">确定
+                        </button>
+                        <div class="col-md-3 align-self-center"><span></span></div>
+                    </div>
+
+                </form>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<div id="disposeModal" class="modal">
+  <div class="modal-content">
+    <p id="categoryInfo"></p>
+    <div style="display: flex; justify-content: space-between; margin-top: 10px;  margin-left: 40px; margin-right: 40px;">
+
+         <form action="{% url 'delete_category' %}" id="DeleteCategoryForm" method="post">
+    {% csrf_token %}
+       <button class="btn btn-outline-danger btn-sm" onclick="DisposeAccount()" id="confirmDeleteBtn" >确认</button>
+         </form>
+
+      <button class="btn btn-outline-success btn-sm" onclick="cancelDispose()">取消</button>
+    </div>
+  </div>
+</div>
+
+    <!--------------------------------------
+    FOOTER
+    --------------------------------------->
+    <div class="container mt-1">
+        <footer class="bg-white border-top p-3 text-muted small">
+            <div class="row align-items-center justify-content-between">
+                <div>
+                    <span class="navbar-brand mr-2"><strong>五元一次方程组</strong></span> 倾情制作
+                    <script>document.write(new Date().getFullYear())</script>
+                    . Open most copyright.
+                </div>
+                <div>
+                    点击 <a class="text-secondary font-weight-bold" href="https://github.com/Shugify/BlogsiteProject/"
+                            target="_blank">这里</a> 查看项目源码.
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- End Footer -->
+
+    <!--------------------------------------
+    JAVASCRIPTS
+    --------------------------------------->
+    <script src="{% static 'app01/js/vendor/jquery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'app01/js/vendor/popper.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'app01/js/vendor/bootstrap.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'app01/js/functions.js' %}" type="text/javascript"></script>
+
+    <script>
+
+
+        function submitForm() {
+    document.getElementById('submitBtn').disabled = true;
+
+    var category = document.getElementById('inputCGname').value;
+
+    var csrfToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/ad_add_category/', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('X-CSRFToken', csrfToken);
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                // 注册成功，显示弹
+                var modal = document.getElementById("successModal");
+                var countdownElement = document.getElementById("countdown");
+                 countdownElement.textContent =  "添加成功！";
+
+
+                modal.style.display = "flex"; // 将弹窗显示
+                // 使用以下代码设置弹窗居中
+                modal.style.alignItems = "center"; // 垂直居中
+                modal.style.justifyContent = "center"; // 水平居中
+
+
+                var countdown = 1;
+                var countdownInterval = setInterval(function() {
+                    countdown--;
+
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                       window.location.href = '/ad_add_category/';
+                    }
+                }, 1000);
+
+
+            } else {
+                // 注册失败，设置错误信息
+                if (response.error_type === 'invalid') {
+                    alert(response.error);
+                   // window.location.href = '/ad_add_category/';
+                }
+
+                if (response.error_type === 'category_exists') {
+                    document.getElementById('vCG').style.color = "red";
+                    document.getElementById('vCG').innerText = response.error;
+                } else {
+                    vCG.textContent = ""; // 清空错误信息
+                }
+
+
+            }
+            document.getElementById('submitBtn').disabled = false;
+        }
+    };
+
+    var data = 'category_name=' + encodeURIComponent(category) ;
+    xhr.send(data);
+    }
+
+
+
+
+    </script>
+
+
+<script>
+
+function confirmDelete(categoryId, categoryName) {
+
+
+     // 获取弹窗元素
+    var modal = document.getElementById("disposeModal");
+    // 获取类别信息的p元素
+    var categoryInfo = document.getElementById("categoryInfo");
+
+    // 设置类别信息文本
+    categoryInfo.textContent = "确定删除类别：" + categoryName + "  (ID: " + categoryId + ") 吗？";
+
+    modal.setAttribute("data-category-id", categoryId);
+    modal.setAttribute("data-category-name", categoryName);
+
+    // 显示弹窗
+    modal.style.display = "flex";
+    modal.style.alignItems = "center";
+    modal.style.justifyContent = "center";
+}
+
+
+function cancelDispose() {
+    // 隐藏弹窗
+    var modal = document.getElementById("disposeModal");
+    modal.style.display = "none";
+}
+
+function DisposeAccount() {
+
+ var modal = document.getElementById("disposeModal");
+    modal.style.display = "none";
+
+
+ document.getElementById('confirmDeleteBtn').disabled = true;
+   var modal = document.getElementById("disposeModal");
+
+    // 获取存储在自定义属性中的类别ID和名称
+    var categoryId = modal.getAttribute("data-category-id");
+    var categoryName = modal.getAttribute("data-category-name");
+
+
+    // 获取 CSRF 令牌
+    var csrfToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+
+    // 创建 XMLHttpRequest 对象
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/delete_category/', true); // 将 URL 修改为实际的删除类别的路由
+
+    // 设置请求头
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('X-CSRFToken', csrfToken);
+
+    // 监听状态改变
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                // 删除成功，可以在这里进行一些操作，比如显示成功提示
+                console.log('类别删除成功');
+                  // 显示弹窗
+                var modal = document.getElementById("successModal");
+                var countdownElement = document.getElementById("countdown");
+                 countdownElement.textContent =  "该类别已删除";
+
+
+                modal.style.display = "flex"; // 将弹窗显示
+                // 使用以下代码设置弹窗居中
+                modal.style.alignItems = "center"; // 垂直居中
+                modal.style.justifyContent = "center"; // 水平居中
+
+
+                var countdown = 1;
+                var countdownInterval = setInterval(function() {
+                    countdown--;
+
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                       window.location.href = '/ad_add_category/';
+                    }
+                }, 1000);
+
+
+            } else {
+                // 处理删除失败的情况，可以在控制台输出错误信息
+                console.error('删除类别失败');
+            }
+             document.getElementById('confirmDeleteBtn').disabled = false;
+        }
+    };
+
+    // 发送请求
+    xhr.send('cid=' + encodeURIComponent(categoryId));
+}
+
+
+
+
+</script>
+
+
+</body>
+</html>
