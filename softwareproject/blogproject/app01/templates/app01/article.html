@@ -32,7 +32,7 @@
 			<a class="nav-link" href="http://127.0.0.1:8000/my_article/">我的blog</a>
 			</li>
 			<li class="nav-item">
-			<a class="nav-link" href="http://127.0.0.1:8000/article/">分类</a>
+			<a class="nav-link" href="http://127.0.0.1:8000/category/">分类</a>
 			</li>
 		</ul>
 
@@ -73,7 +73,7 @@
                 <div class="col">
                     <div style="font-size: 20px;font-weight: bold;margin:15px 0 10px 10px;">
                         {% if flag %}
-                            <a href="{% url 'user_detail_lastest' author.administrator_id flag %}">{{author_name}}<p class="fas fa-star" style="color: #8B0000" ></a>
+                            <a href="{% url 'user_detail_lastest' author.administrator_id flag %}">{{author_name}}<p class="fas fa-star" style="color: #8B0000" ></p></a>
                         {% else %}
                              <a href="{% url 'user_detail_lastest' author.user_id flag %}">{{author_name}}</a>
                         {% endif %}
@@ -155,9 +155,7 @@
                 <div class="container ml-5 mr-5">
                         <div class="col-12">
                             <!-- 文章内容 -->
-                            <p style="white-space: pre-wrap;">
-                                {{ article.article_content }}
-                            </p>
+                            <p style="white-space: pre-wrap;">{{ article.article_content }}</p>
                         </div>
                 </div>
             </div>
