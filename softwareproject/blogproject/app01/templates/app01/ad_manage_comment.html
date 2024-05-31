@@ -89,29 +89,109 @@ NAVBARMundana is an HTML Bootstrap Template for Professional Blogging
 MAIN
 ------------------>
     
-<div class="container pt-4 pb-4 mt-1 ">
-
+<div class="container pt-4 pb-4 mt-1">
+	<div class="col-md-12 mb-4" id="articles">
 		<div class="col-md-12" style="display: flex; justify-content: flex-end;">
-			 	 <form class="form-inline ">
-        			<input class="form-control form-control-sm mr-sm-2 rounded" type="search" placeholder="搜索特定评论" aria-label="Search" id="navSearchInput">
-
-        			<button class="btn btn-outline-success btn-sm my-2 my-sm-0" type="button" onclick="performSearch()">搜索</button>
-
-    			</form>
+			<form class="form-inline">
+				<input class="form-control form-control-sm mr-sm-2 rounded" type="search" placeholder="搜索特定评论" aria-label="Search" id="navSearchInput">
+				<button class="btn btn-outline-success btn-sm my-2 my-sm-0" type="button" onclick="performSearch()">搜索</button>
+			</form>
 		</div>
 
-	<h2 class="pb-4 font-weight-bold spanborder"></h2>
+		<h2 class="pb-4 font-weight-bold spanborder"></h2>
+		<!-- 评论列举 -->
+		<div class="col-md-11 pl-5">
+			{% for comment in comments %}
+				<div class="mb-3 d-flex justify-content-between">
 
+					<!-- 具体信息 -->
+					<div class="pr-2 ">
 
-<div class="col-md-12" style="display: flex; justify-content: center;;">
-	<div class="row col-md-10">
-   			<a class="pl-5" >列举个人文章</a>
-			<button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2" type="button" >删除</button>
+						<span class="h9 font-bold">
+							{% if comment.comment_user %}
+								<a class="h6 font-weight-bold" href="{% url 'user_detail_lastest' comment.comment_user.user_id 0 %}">{{comment.comment_user.user_name}}</a>
+								评论了文章：
+								<a class="h6 font-weight-bold" href="{% url 'article' comment.comment_article.article_id %}">{{comment.comment_article.article_title}}</a>
+							{% else %}
+								<a class="h6 font-weight-bold" href="{% url 'user_detail_lastest' comment.comment_ad.administrator_id 1 %}">{{comment.comment_ad.administrator_name}}<i class="fas fa-star" style="color: #8B0000"></i></a>
+								评论了文章：
+								<a class="h6 font-weight-bold" href="{% url 'article' comment.comment_article.article_id %}">{{comment.comment_article.article_title}}</a>
+							{% endif %}
+						</span>
+						 <br>
+						<br>
+						<!-- 内容摘要 -->
+						<span class="text-clip">
+							{{comment.comment_content}}
+						</span>
+						<!-- 内容摘要 -->
+						<br>
+                        <br>
+						<!-- 创建时间 -->
+						<span>
+                        	<i class="fas fa-clock" style="color: pink;"></i>
+                        	{{ comment.comment_created|date:'Y-m-d H:i:s' }}发表
+                    	</span>
+						<br>
+						<!-- 创建时间 -->
+						<h2 class="pb-4 font-weight-bold spanborder"></h2>
+					</div>
 
+					<!-- 具体信息 -->
+					<div style="left:200px">
+						<a href="{% url 'ad_comment_detail' comment.comment_article.article_id comment.comment_id %}" ><button class="btn btn-primary btn-sm">查看详情</button></a>
+						<a href="{% url 'ad_delete_user_comment' comment.comment_id %}" onclick="confirm_delete()"><button class="btn btn-primary btn-sm">删除</button></a>
+					</div>
+
+				</div>
+			{% endfor %}
+
+    		<!-- 分页功能 页码导航 -->
+			<div align="center" style="position:relative;top:10px">
+				<div class="pagination row">
+					<div class="m-auto">
+						<span class="step-links">
+							<!-- 如果不是第一页，则显示上翻按钮 -->
+							{% if comments.has_previous %}
+								<a href="?page=1" class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2">
+									&laquo; 1
+								</a>
+								<span>...</span>
+								<a href="?page={{ comments.previous_page_number }}"
+								   class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2"
+								>
+									{{ comments.previous_page_number }}
+								</a>
+							{% endif %}
+
+							<!-- 当前页面 -->
+							<span class="ml-auto btn btn-success btn-sm my-2 my-sm-2">
+								{{ comments.number }}
+							</span>
+
+							<!-- 如果不是最末页，则显示下翻按钮 -->
+							{% if comments.has_next %}
+							<a href="?page={{ comments.next_page_number }}"
+								class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2"
+							>
+							{{ comments.next_page_number }}
+							</a>
+							<span>...</span>
+							<a href="?page={{ comments.paginator.num_pages }}"
+							   class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2"
+							>
+							{{ comments.paginator.num_pages }} &raquo;
+							</a>
+							{% endif %}
+						</span>
+					</div>
+				</div>
+			</div>
+			<!-- 分页功能 页码导航 -->
+		</div>
+		<!-- 文章列举 -->
     </div>
 </div>
-</div>
-
 
 
 <!--------------------------------------
