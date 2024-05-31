@@ -141,6 +141,7 @@ class Article(models.Model):  # 文章信息表
 
 
 class Comment(models.Model):  # 评论信息表
+    objects = models.Manager()
     # 评论id，主键
     comment_id = models.AutoField(primary_key=True, db_index=True)
     # 评论所属的文章的id,为Article主键的外键。参数 on_delete 用于指定数据删除的方式。这里设置级联删除，如果外键那条数据被删除，本条数据也删除。
