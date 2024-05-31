@@ -1091,10 +1091,30 @@ def ad_delete_user_article(request, id):
     return redirect("ad_manage_article")
 
 
+
 # 管理员管理评论页
 def ad_manage_comment(request):
-    pass
-    return render(request, 'app01/ad_manage_comment.html')
+    # 获取所有评论
+    comment_list = Comment.objects.all().order_by('-comment_created')
+    # 每页显示 3 篇评论
+    paginator = Paginator(comment_list, 3)
+    # 获取 url 中的页码
+    page = request.GET.get('page')
+    # 将导航对象相应的页码内容返回给 articles
+    comments = paginator.get_page(page)
+    return render(request, 'app01/ad_manage_comment.html', locals())
+
+    # 删除页
+
+
+def ad_delete_user_comment(request, id):
+    # 根据 id 获取需要删除的评论
+    comment = models.Comment.objects.get(comment_id=id)
+    # 调用.delete()方法删除评论
+    comment.delete()
+    # 完成删除后返回个人评论列表
+    return redirect("ad_manage_comment")
+
 
 
 # 管理员分类管理
