@@ -109,13 +109,13 @@ MAIN
 
 						<span class="h9 font-bold">
 							{% if comment.comment_user %}
-								<a class="h6 font-weight-bold" href="{% url 'user_detail_lastest' comment.comment_user.user_id 0 %}">{{comment.comment_user.user_name}}</a>
+								<a class="h6 font-weight-bold" href="{% url 'ad_user_detail_lastest' comment.comment_user.user_id 0 %}">{{comment.comment_user.user_name}}</a>
 								评论了文章：
-								<a class="h6 font-weight-bold" href="{% url 'article' comment.comment_article.article_id %}">{{comment.comment_article.article_title}}</a>
+								<a class="h6 font-weight-bold" href="{% url 'ad_article' comment.comment_article.article_id %}">{{comment.comment_article.article_title}}</a>
 							{% else %}
-								<a class="h6 font-weight-bold" href="{% url 'user_detail_lastest' comment.comment_ad.administrator_id 1 %}">{{comment.comment_ad.administrator_name}}<i class="fas fa-star" style="color: #8B0000"></i></a>
+								<a class="h6 font-weight-bold" href="{% url 'ad_user_detail_lastest' comment.comment_ad.administrator_id 1 %}">{{comment.comment_ad.administrator_name}}<i class="fas fa-star" style="color: #8B0000"></i></a>
 								评论了文章：
-								<a class="h6 font-weight-bold" href="{% url 'article' comment.comment_article.article_id %}">{{comment.comment_article.article_title}}</a>
+								<a class="h6 font-weight-bold" href="{% url 'ad_article' comment.comment_article.article_id %}">{{comment.comment_article.article_title}}</a>
 							{% endif %}
 						</span>
 						 <br>
