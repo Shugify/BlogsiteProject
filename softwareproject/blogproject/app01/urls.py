@@ -71,6 +71,8 @@ urlpatterns = [
     path('ad_manage_article/', views.ad_manage_article, name='ad_manage_article'),
     # 管理员管理评论页
     path('ad_manage_comment/', views.ad_manage_comment, name='ad_manage_comment'),
+    # 管理员评论删除页
+    path('ad_delete_user_comment/<str:id>/', views.ad_delete_user_comment, name='ad_delete_user_comment'),
 
     # 管理员发布文章页
     path('ad_send_article/', views.ad_send_article, name='ad_send_article'),
