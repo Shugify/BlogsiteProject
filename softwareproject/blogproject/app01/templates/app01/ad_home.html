@@ -104,12 +104,72 @@ MAIN
 
 	<h2 class="pb-4 font-weight-bold spanborder"></h2>
 
+<!--列举个人账号-->
+<div class="col-md-12" style="display: flex; justify-content: center;">
+	<div class="row col-md-10 justify-content-center">
+        {% for user in users %}
+            <div class="col-12 mt-2 mb-2 d-flex justify-content-center" style="height:80px;">
+                <!-- 头像 -->
+                <div class="ml-1 col-2">
+                    {% if user.user_pfp %}
+                        <img alt="用户头像" class="rounded-circle" height="80"
+                         src="{{ user.user_pfp.url }}?timestamp={{ timestamp }}" width="80">
+                    {% endif %}
+                </div>
+                <!--name-->
+                <div class="col-8 font-weight-bold ml-3 mt-3" style="font-size: 27px;">
+                    <a href="{% url 'user_detail_lastest' user.user_id flag %}">{{user.user_name}} (ID:{{ user.user_id }})</a>
+                    <div class="font-weight-light" style="font-size: small">
+                       个人简介：  {{ user.user_introduction }}
+                    </div>
+                </div>
+                <a href="{% url 'ad_delete_user' user.user_id %}" onclick="confirm_delete()"><button class="btn btn-primary btn-sm mt-3">删除</button></a>
+            </div>
+            <hr>
+            <hr>
+        {% endfor %}
+        <!-- 分页功能 页码导航 -->
+			<div align="center" style="position:relative;top:10px">
+				<div class="pagination row">
+					<div class="m-auto">
+						<span class="step-links">
+							<!-- 如果不是第一页，则显示上翻按钮 -->
+							{% if users.has_previous %}
+								<a href="?page=1" class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2">
+									&laquo; 1
+								</a>
+								<span>...</span>
+								<a href="?page={{ users.previous_page_number }}"
+								   class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2"
+								>
+									{{ users.previous_page_number }}
+								</a>
+							{% endif %}
 
-<div class="col-md-12" style="display: flex; justify-content: center;;">
-	<div class="row col-md-10">
-   			<a class="pl-5" >列举个人账号</a>
-			<button class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2" type="button" >删除</button>
+							<!-- 当前页面 -->
+							<span class="ml-auto btn btn-success btn-sm my-2 my-sm-2">
+								{{ users.number }}
+							</span>
 
+							<!-- 如果不是最末页，则显示下翻按钮 -->
+							{% if users.has_next %}
+							<a href="?page={{ users.next_page_number }}"
+								class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2"
+							>
+							{{ users.next_page_number }}
+							</a>
+							<span>...</span>
+							<a href="?page={{ users.paginator.num_pages }}"
+							   class="ml-auto btn btn-outline-success btn-sm my-2 my-sm-2"
+							>
+							{{ users.paginator.num_pages }} &raquo;
+							</a>
+							{% endif %}
+						</span>
+					</div>
+				</div>
+			</div>
+			<!-- 分页功能 页码导航 -->
     </div>
 </div>
 </div>
@@ -134,7 +194,22 @@ FOOTER
 	</footer>
 </div>
 <!-- End Footer -->
-    
+
+<!--实现删除时的弹窗功能;a标签的onclick和href的执行顺序是：先onclick再href-->
+<script>
+// 删除文章的函数
+function confirm_delete() {
+	const ans = confirm("确认要删除？");
+	if (ans===false) {
+		event.preventDefault(); //取消默认应答，直接跳过a标签内的href操作
+		return false;
+	}else{
+		alert("删除成功")
+		return true
+	}
+}
+</script>
+
 <!--------------------------------------
 JAVASCRIPTS
 --------------------------------------->
