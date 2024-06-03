@@ -796,8 +796,20 @@ def ad_login(request):
 
 # 管理员主页面，用于管理用户账户
 def ad_home(request):
-    # 获取所有用户
-    user_list = User.objects.all().order_by('-user_register')
+    # 获取所有文章
+    user_list = User.objects.all()
+    search = request.GET.get('search')
+
+    # 搜索查询集
+    if search:
+        user_list = user_list.filter(
+            Q(user_id__icontains=search) |
+            Q(user_name__icontains=search)
+        ).order_by('-user_register')
+    else:
+        search = ''
+        user_list = User.objects.all().order_by('-user_register')
+
     # 每页显示 10 个用户
     paginator = Paginator(user_list, 10)
     # 获取 url 中的页码
@@ -1089,7 +1101,20 @@ def ad_register(request):
 # 管理员管理文章页
 def ad_manage_article(request):
     # 获取所有文章
-    article_list = Article.objects.all().order_by('-article_created')
+    article_list = Article.objects.all()
+    search = request.GET.get('search')
+
+    # 搜索查询集
+    if search:
+                article_list = article_list.filter(
+                    Q(article_title__icontains=search) |
+                    Q(article_content__icontains=search) |
+                    Q(tags__name__icontains=search)
+                ).order_by('-article_created')
+    else:
+        search=''
+        article_list = Article.objects.all().order_by('-article_created')
+
     # 每页显示 3 篇文章
     paginator = Paginator(article_list, 3)
     # 获取 url 中的页码
@@ -1112,8 +1137,17 @@ def ad_delete_user_article(request, id):
 
 # 管理员管理评论页
 def ad_manage_comment(request):
-    # 获取所有评论
-    comment_list = Comment.objects.all().order_by('-comment_created')
+    # 获取所有文章
+    comment_list = Comment.objects.all()
+    search = request.GET.get('search')
+
+    # 搜索查询集
+    if search:
+        comment_list = comment_list.filter(comment_content__icontains=search).order_by('-comment_created')
+    else:
+        search = ''
+        comment_list = Comment.objects.all().order_by('-comment_created')
+
     # 每页显示 3 篇评论
     paginator = Paginator(comment_list, 3)
     # 获取 url 中的页码
