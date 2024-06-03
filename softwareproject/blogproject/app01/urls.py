@@ -56,6 +56,8 @@ urlpatterns = [
 
     # 管理员主页,进行用户账户管理
     path('ad_home/', views.ad_home, name='ad_home'),
+    # 管理员删除账户页
+    path('ad_delete_user/<str:id>/', views.ad_delete_user, name='ad_delete_user'),
     # 管理员个人信息页
     path('ad_account_setting/', views.ad_account_setting, name='ad_account_setting'),
     path('upload_administrator/', views.upload_administrator, name='upload_administrator'),

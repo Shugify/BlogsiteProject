@@ -796,8 +796,26 @@ def ad_login(request):
 
 # 管理员主页面，用于管理用户账户
 def ad_home(request):
-    pass
-    return render(request, 'app01/ad_home.html')
+    # 获取所有用户
+    user_list = User.objects.all().order_by('-user_register')
+    # 每页显示 10 个用户
+    paginator = Paginator(user_list, 10)
+    # 获取 url 中的页码
+    page = request.GET.get('page')
+    # 将导航对象相应的页码内容返回给 articles
+    users = paginator.get_page(page)
+    flag = 0
+
+    return render(request, 'app01/ad_home.html', {'users': users, 'flag': flag})
+
+
+def ad_delete_user(request, id):
+    # 根据 id 获取需要删除的用户
+    user = models.User.objects.get(user_id=id)
+    # 调用.delete()方法删除用户
+    user.delete()
+    # 完成删除后返回管理用户列表
+    return redirect("ad_home")
 
 
 # 管理员账号信息显示页
