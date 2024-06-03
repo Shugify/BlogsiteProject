@@ -114,12 +114,10 @@ NAVBAR
 
             <ul class="navbar-nav ml-auto d-flex align-items-center">
 			<li class="nav-item highlight">
-			 	 <form class="form-inline my-2 my-lg-0">
-        			<input class="form-control form-control-sm mr-sm-2 rounded" type="search" placeholder="关键字搜索文章" aria-label="Search" id="navSearchInput">
-
-        			<a class="btn btn-outline-success btn-sm my-2 my-sm-0" href="http://127.0.0.1:8000/search/">搜索</a>
-
-    			</form>
+			 	<form class="form-inline my-2 my-lg-0" action="http://127.0.0.1:8000/search/" method="GET">
+            	<input class="form-control form-control-sm mr-sm-2 rounded" type="search" placeholder="关键字搜索文章" aria-label="Search" id="navSearchInput" name="search">
+            	<button class="btn btn-outline-success btn-sm my-2 my-sm-0" type="submit">搜索</button>
+        		</form>
 			</li>
 		</ul>
 
