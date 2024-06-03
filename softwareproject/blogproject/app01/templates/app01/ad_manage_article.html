@@ -42,13 +42,6 @@
             background-size: cover; /* 图片等比例缩放并填充满容器 */
             background-position: center; /* 图片居中显示 */
         }
-
-		.nav-item.active .nav-link {
-            color: black !important; /* 修改文本颜色 */
-            font-weight: bold;
-            /* background-color: #3D91C9;*/
-        }
-
     </style>
 </head>
 <body>
@@ -73,23 +66,17 @@ NAVBAR
     <div class="container">
         <div class="navbar-collapse collapse" id="navbarColor02" style="">
             <ul class="navbar-nav mr-auto d-flex align-items-center">
-                <li class="nav-item  ">
-                    <a class="nav-link " href="http://127.0.0.1:8000/ad_home/">账户管理</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://127.0.0.1:8000/ad_home/">账户管理</a>
                 </li>
-                <li class="nav-item active pl-3">
-                    <a class="nav-link active" href="http://127.0.0.1:8000/ad_manage_article/">文章管理</a>
-                </li>
-
                 <li class="nav-item pl-3">
-                    <a class="nav-link " href="http://127.0.0.1:8000/ad_manage_comment/">评论管理</a>
+                    <a class="nav-link" href="http://127.0.0.1:8000/ad_manage_article/">文章管理</a>
                 </li>
-
+                <li class="nav-item pl-3">
+                    <a class="nav-link" href="http://127.0.0.1:8000/ad_manage_comment/">评论管理</a>
+                </li>
                 <li class="nav-item pl-3">
                     <a class="nav-link" href="http://127.0.0.1:8000/ad_self_article/">我的blog</a>
-                </li>
-
-                <li class="nav-item pl-3">
-                    <a class="nav-link " href="http://127.0.0.1:8000/ad_add_category/">分类管理</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto d-flex align-items-center">
@@ -120,8 +107,8 @@ MAIN
 	<div class="col-md-12 mb-4" id="articles">
 		<div class="col-md-12" style="display: flex; justify-content: flex-end;">
 			<form class="form-inline">
-				<input class="form-control form-control-sm mr-sm-2 rounded" type="search" placeholder="搜索特定文章" aria-label="Search" id="navSearchInput">
-				<button class="btn btn-outline-success btn-sm my-2 my-sm-0" type="button" onclick="performSearch()">搜索</button>
+				<input class="form-control form-control-sm mr-sm-2 rounded" type="search" placeholder="关键字搜索文章" aria-label="Search" id="navSearchInput" name="search">
+            	<button class="btn btn-outline-success btn-sm my-2 my-sm-0" type="submit">搜索</button>
 			</form>
 		</div>
 
@@ -141,7 +128,7 @@ MAIN
 					</div>
 					<!-- 图片 -->
 					<!-- 具体信息 -->
-					<div class="pr-2 col-8">
+					<div class="pr-2">
 						 <!-- 文章标题 -->
 						<h2 class="h4 font-weight-bold">
 							<a href="{% url 'ad_article' article.article_id %}" class="text-dark">{{ article.article_title }}</a>
