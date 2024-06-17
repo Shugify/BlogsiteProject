@@ -123,7 +123,13 @@ MAIN
                        个人简介：  {{ user.user_introduction }}
                     </div>
                 </div>
-                <a href="{% url 'ad_delete_user' user.user_id %}" onclick="confirm_delete()"><button class="btn btn-primary btn-sm mt-3">删除</button></a>
+				<div class="col-2 ">
+					{% if user.user_state == 0 %}
+                    <a href="{% url 'ad_delete_user' user.user_id %}" onclick="return confirm_delete()">
+                        <button class="btn btn-primary btn-sm mt-3">删除</button>
+                    </a>
+                	{% endif %}
+				</div>
             </div>
             <hr>
             <hr>
