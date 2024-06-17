@@ -700,6 +700,17 @@ def logout(request):
 def dispose_account(request):
     user = models.User.objects.get(user_id=request.session['user_id'])
     user.user_state = 1
+    user.user_name = '账号已注销'
+    user.user_pfp = 'app01/static/app01/image/dispose.jpg'
+    user.user_introduction = 'There is nothing.'
+
+    user.user_sex = None
+    user.user_age = None
+    user.user_birthday = None
+    user.user_phone = ''
+    user.user_mail = ''
+    user.user_ip = ''
+    user.user_password = ''
     user.save()
     django_logout(request)
     request.session.clear()
@@ -824,8 +835,21 @@ def ad_home(request):
 def ad_delete_user(request, id):
     # 根据 id 获取需要删除的用户
     user = models.User.objects.get(user_id=id)
+    user.user_state = 1
+    user.user_name = '账号已注销'
+    user.user_pfp = 'app01/static/app01/image/dispose.jpg'
+    user.user_introduction = 'There is nothing.'
+
+    user.user_sex = None
+    user.user_age = None
+    user.user_birthday = None
+    user.user_phone = ''
+    user.user_mail = ''
+    user.user_ip = ''
+    user.user_password = ''
+    user.save()
     # 调用.delete()方法删除用户
-    user.delete()
+
     # 完成删除后返回管理用户列表
     return redirect("ad_home")
 
